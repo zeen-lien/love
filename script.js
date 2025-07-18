@@ -22,62 +22,6 @@ const ctx = canvas.getContext('2d');
 const isLanding = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '';
 const isNext = window.location.pathname.endsWith('next.html');
 
-// --- ANIMASI LANDING: BINTANG-BINTANG ---
-let stars = [];
-function randomStar() {
-  const colors = [
-    '#ffb6d5', '#b6e0fe', '#ffe5b4', '#c1ffd7', '#f7c8ff', '#fff6b4', '#fff', '#ff006a', '#b6004c', '#aaffec', '#ffd6e0', '#e0e7ff'
-  ];
-  return {
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: 0.7 + Math.random() * 2.8,
-    speed: 0.2 + Math.random() * 1.2,
-    alpha: 0.3 + Math.random() * 0.7,
-    alphaDir: Math.random() > 0.5 ? 1 : -1,
-    color: colors[Math.floor(Math.random() * colors.length)],
-    fall: Math.random() < 0.25
-  };
-}
-function drawStar(star) {
-  ctx.save();
-  ctx.globalAlpha = star.alpha;
-  ctx.beginPath();
-  ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
-  ctx.fillStyle = star.color;
-  ctx.shadowColor = star.color;
-  ctx.shadowBlur = 8;
-  ctx.fill();
-  ctx.restore();
-}
-function animateStars() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (stars.length < 120) stars.push(randomStar());
-  for (let i = 0; i < stars.length; i++) {
-    let s = stars[i];
-    drawStar(s);
-    s.alpha += 0.008 * s.alphaDir * (0.5 + Math.random());
-    if (s.alpha > 1) { s.alpha = 1; s.alphaDir = -1; }
-    if (s.alpha < 0.15) { s.alpha = 0.15; s.alphaDir = 1; }
-    if (s.fall) {
-      s.y += s.speed * 2.5;
-      s.x += (Math.random() - 0.5) * 0.5;
-      if (s.y > canvas.height + 10) {
-        stars[i] = randomStar();
-        stars[i].y = -5;
-      }
-    } else {
-      s.x += (Math.random() - 0.5) * 0.1;
-      s.y += (Math.random() - 0.5) * 0.1;
-      if (s.x < 0) s.x = canvas.width;
-      if (s.x > canvas.width) s.x = 0;
-      if (s.y < 0) s.y = canvas.height;
-      if (s.y > canvas.height) s.y = 0;
-    }
-  }
-  if (isLanding) requestAnimationFrame(animateStars);
-}
-
 // --- ANIMASI NEXT: BOKEH BLUR + PARTICLE GLOW ---
 let bokehCircles = [];
 let glowParticles = [];
@@ -167,7 +111,6 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-if (isLanding) animateStars();
 if (isNext) {
   bokehCircles = [];
   for (let i = 0; i < 18; i++) bokehCircles.push(createBokehCircle());
