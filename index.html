@@ -83,5 +83,23 @@ function animateStars() {
 }
 animateStars();
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const nameForm = document.getElementById('nameForm');
+  if (nameForm) {
+    nameForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nickname = document.getElementById('nickname').value;
+      localStorage.setItem('nickname', nickname);
+      const bgMusic = document.getElementById('bgMusic');
+      bgMusic.currentTime = 0;
+      bgMusic.play();
+      setTimeout(function() {
+        window.location.href = 'next.html';
+      }, 800); // kasih jeda biar musik sempat play
+    });
+  }
+});
+</script>
 </body>
 </html> 
