@@ -80,6 +80,7 @@ function animateStars() {
 
 // --- ANIMASI NEXT: BOKEH BLUR + PARTICLE GLOW ---
 let bokehCircles = [];
+let glowParticles = [];
 function createBokehCircle() {
   const colors = [
     'rgba(255,182,213,0.18)', 'rgba(182,224,254,0.16)', 'rgba(247,200,255,0.14)', 'rgba(255,246,180,0.13)', 'rgba(193,255,215,0.13)', 'rgba(255,255,255,0.12)'
