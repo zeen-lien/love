@@ -1,0 +1,127 @@
+body {
+  background: #000000;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+  max-width: 350px;
+  width: 90vw;
+  margin: 10vh auto 0 auto;
+  background: rgba(10, 10, 10, 0.488);
+  border: 2px solid #610028;
+  border-radius: 18px;
+  padding: 8vw 4vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 10px;
+  font-size: 2.2em;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px #ffb6d5aa;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #b6004c;
+  border-radius: 8px;
+  background: #222;
+  color: #fff;
+  outline: none;
+  margin-bottom: 16px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+button {
+  background: transparent;
+  color: #ff006a;
+  border: 2px solid #565656;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 8px;
+}
+
+button:hover {
+  background: #17000a;
+  color: #ffffff;
+}
+
+#loveCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.9;
+  background: rgba(0,0,0,0.55);
+}
+
+@media (max-width: 600px) {
+  .container {
+    max-width: 98vw;
+    padding: 8vw 2vw 18vw 2vw;
+    min-height: 480px;
+    font-size: 0.98em;
+    padding-bottom: 0;
+  }
+  h1 {
+    font-size: 1.2em;
+  }
+  .love-message {
+    font-size: 0.98em;
+    padding: 12px 6px 90px 6px;
+    position: relative;
+  }
+  input[type="text"] {
+    font-size: 0.95em;
+  }
+  button {
+    font-size: 1.08em;
+    padding: 12px 0;
+    min-width: 160px;
+  }
+  #buttonRow {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    width: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    z-index: 2;
+    box-shadow: none;
+  }
+  #buttonRow button {
+    min-width: 44vw;
+    margin: 0;
+    font-size: 1.08em;
+    border-radius: 10px;
+    border: 2px solid #888;
+    color: #888;
+    background: transparent;
+    font-weight: bold;
+    box-shadow: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  #buttonRow button:hover {
+    background: #888;
+    color: #18181b;
+  }
+} 

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Untuk Kamu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 id="nicknameDisplay"></h1>
+    <div class="love-message" id="loveMessage" style="display:none;">
+      <span id="typedMessage"></span>
+      <div style="margin-top:24px;">
+        <button id="surpriseBtn" style="display:none; background:transparent; color:#888; border:2px solid #888; border-radius:8px; padding:10px 24px; font-size:1em; cursor:pointer; font-weight:bold; box-shadow:none; position:relative;">Ada Kejutan di Sini</button>
+      </div>
+      <div id="secretMessage" style="display:none; margin-top:8px; font-size:1.1em; color:#fff; text-shadow:0 2px 8px #ffb6d5aa;"></div>
+      <div id="buttonRow" style="display:flex; justify-content:center; align-items:center; gap:18px; margin-top:40px; margin-bottom:0; position:fixed; left:0; right:0; bottom:24px; z-index:10; background:transparent; width:100vw; max-width:100vw;">
+        <button id="redirectBtn" style="display:none; background:transparent; color:#888; border:2px solid #888; border-radius:8px; padding:10px 24px; font-size:1em; cursor:pointer; font-weight:bold;">Kejutan Selanjutnya</button>
+      </div>
+    </div>
+    <audio id="bgMusic" src="assets/music/lagu.mp3" loop></audio>
+    <div id="confettiContainer"></div>
+  </div>
+  <canvas id="loveCanvas"></canvas>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Ambil nama panggilan dari localStorage
+      const nickname = localStorage.getItem('nickname') || 'Sayang';
+      const nicknameDisplay = document.getElementById('nicknameDisplay');
+      const loveMessage = document.getElementById('loveMessage');
+      const bgMusic = document.getElementById('bgMusic');
+      const typedMessage = document.getElementById('typedMessage');
+      nicknameDisplay.textContent = `Hai, ${nickname}!`;
+      loveMessage.style.display = 'none';
+      // Pesan cinta yang akan di-typing
+      const message = `Aku cuma mau bilang, aku bersyukur banget punya kamu. Makasih udah selalu ada buat aku. Aku sayang kamu! ❤️`;
+      // Pesan rahasia setelah surprise
+      const secretText = 'Aku harap kita selalu bersama, saling support, dan bahagia bareng terus. Kamu itu hadiah terindah buat aku. I love you! 💖';
+      function typeWriter(text, i, speed) {
+        if (i < text.length) {
+          typedMessage.innerHTML += text.charAt(i);
+          setTimeout(() => typeWriter(text, i + 1, speed), speed);
+        } else {
+          setTimeout(showSurpriseBtn, 400);
+        }
+      }
+      function showSurpriseBtn(){
+        document.getElementById('surpriseBtn').style.display = 'inline-block';
+      }
+      // Daftar pesan rahasia romantis
+      const secretMessages = [
+        'Aku selalu rindu kamu setiap saat.',
+        'Kamu adalah alasan aku tersenyum setiap hari.',
+        'Semoga kita selalu bersama selamanya.',
+        'Terima kasih sudah jadi yang terbaik buat aku.',
+        'Aku nggak pernah bosen bilang sayang ke kamu.',
+        'Kamu itu hadiah terindah buat aku.',
+        'Aku ingin membahagiakan kamu selalu.',
+        'Cinta ini nggak akan pernah habis untukmu.',
+        'Kamu selalu di hati aku.',
+        'Aku bangga punya kamu.',
+        'Kamu segalanya buat aku.',
+        'Aku ingin masa depan bareng kamu.',
+        'Aku suka semua tentang kamu.',
+        'Kamu lucu banget!',
+        'Jangan pernah jauh dari aku ya!',
+        'Aku ingin memelukmu sekarang.',
+        'Kamu bikin hari-hariku indah.',
+        'Aku cinta kamu lebih dari apapun.',
+        'Kamu selalu spesial di mataku.',
+        'Aku ingin selalu ada buat kamu.'
+      ];
+      let usedSecretMessages = [];
+      function getUniqueSecretMessage() {
+        if (usedSecretMessages.length === secretMessages.length) usedSecretMessages = [];
+        let msg;
+        do {
+          msg = secretMessages[Math.floor(Math.random() * secretMessages.length)];
+        } while (usedSecretMessages.includes(msg));
+        usedSecretMessages.push(msg);
+        return msg;
+      }
+      const surpriseBtn = document.getElementById('surpriseBtn');
+      const redirectBtn = document.getElementById('redirectBtn');
+      let surpriseClickCount = 0;
+      surpriseBtn.textContent = 'Ada Kejutan di Sini';
+      // redirectBtn.style.display = 'inline-block'; // <-- error di sini jika redirectBtn belum ada
+      if (redirectBtn) {
+        redirectBtn.onclick = function() {
+          // Ganti URL di bawah ke tujuan redirect, misal WhatsApp atau halaman lain
+          window.location.href = 'https://wa.me/6281234567890?text=Hai%20sayang%20aku%20udah%20lihat%20kejutan%20dari%20kamu!';
+        };
+      }
+      surpriseBtn.onclick = function(){
+        // Play musik saat klik kejutan (HAPUS agar tidak reset)
+        // bgMusic.currentTime = 0;
+        // const playPromise = bgMusic.play();
+        // if (playPromise !== undefined) {
+        //   playPromise.catch(() => {
+        //     musicPlayBtn.style.display = 'inline-block';
+        //   });
+        // }
+        // musicPlayBtn.onclick = function() {
+        //   bgMusic.play();
+        //   musicPlayBtn.style.display = 'none';
+        // };
+        // Hilangkan sapaan Hai...
+        nicknameDisplay.style.display = 'none';
+        // Animasi kembang api klasik
+        showClassicFireworks();
+        // Pesan rahasia random
+        const secretMsg = document.getElementById('secretMessage');
+        secretMsg.textContent = '';
+        secretMsg.style.display = 'block';
+        const msg = getUniqueSecretMessage();
+        function typeSecret(text, i, speed) {
+          if (i < text.length) {
+            secretMsg.textContent += text.charAt(i);
+            setTimeout(() => typeSecret(text, i + 1, speed), speed);
+          }
+        }
+        typeSecret(msg, 0, 36);
+        // Ubah label tombol kejutan setelah klik pertama
+        surpriseClickCount++;
+        if (surpriseClickCount === 1) {
+          surpriseBtn.textContent = 'Lagi...!!!';
+        }
+        // Pindahkan tombol ke dalam row flex di bawah container, selalu rata tengah
+        // Styling tombol outline abu-abu dan hover (semua tombol)
+        [surpriseBtn, redirectBtn].forEach(btn => {
+          btn.style.background = 'transparent';
+          btn.style.color = '#888';
+          btn.style.border = '2px solid #888';
+          btn.style.boxShadow = 'none';
+          btn.style.transition = 'background 0.2s, color 0.2s';
+          btn.onmouseover = function() {
+            this.style.background = '#888';
+            this.style.color = '#18181b';
+          };
+          btn.onmouseout = function() {
+            this.style.background = 'transparent';
+            this.style.color = '#888';
+          };
+        });
+        surpriseBtn.style.display = 'inline-block';
+        redirectBtn.style.display = 'inline-block';
+        // Susun tombol horizontal (kanan kiri) di bawah pesan
+        const buttonRow = document.getElementById('buttonRow');
+        buttonRow.appendChild(surpriseBtn);
+        buttonRow.appendChild(redirectBtn);
+        buttonRow.style.display = 'flex';
+        buttonRow.style.justifyContent = 'center';
+        buttonRow.style.alignItems = 'center';
+        buttonRow.style.gap = '18px';
+        buttonRow.style.marginTop = '40px';
+        buttonRow.style.marginBottom = '0';
+        redirectBtn.onclick = function() {
+          window.location.href = 'next2.html'; // Ganti ke halaman berikutnya
+        };
+      };
+      // Fungsi animasi kembang api klasik
+      function showClassicFireworks() {
+        const fireworksCanvas = document.createElement('canvas');
+        fireworksCanvas.width = window.innerWidth;
+        fireworksCanvas.height = window.innerHeight;
+        fireworksCanvas.style.position = 'fixed';
+        fireworksCanvas.style.left = 0;
+        fireworksCanvas.style.top = 0;
+        fireworksCanvas.style.width = '100vw';
+        fireworksCanvas.style.height = '100vh';
+        fireworksCanvas.style.pointerEvents = 'none';
+        fireworksCanvas.style.zIndex = 3000;
+        document.body.appendChild(fireworksCanvas);
+        const ctx = fireworksCanvas.getContext('2d');
+        const colors = ['#ffb6d5','#b6e0fe','#ffe5b4','#c1ffd7','#f7c8ff','#fff6b4','#fff','#ff006a','#b6004c','#aaffec','#ffd6e0','#e0e7ff'];
+        const romanticWords = [
+          'I love you', 'I miss you', 'Sayang', 'Kamu spesial', 'My everything', 'Selalu di hati', 'Cinta', 'Rindu', 'Peluk', 'Kamu lucu', 'Sweetheart', 'Dear', 'Honey', 'My love', 'Forever', 'Always', '❤️', '💖', '💘', '💕'
+        ];
+        let fireworks = [];
+        let wordExplosions = [];
+        let frame = 0;
+        function launchFirework() {
+          const x = Math.random() * fireworksCanvas.width * 0.7 + fireworksCanvas.width * 0.15;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          // Peluncur (rocket)
+          let rocket = {
+            x: x,
+            y: fireworksCanvas.height,
+            vy: -8 - Math.random() * 2,
+            exploded: false,
+            color: color,
+            particles: []
+          };
+          fireworks.push(rocket);
+        }
+        function drawFireworks() {
+          ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+          for (let i = 0; i < fireworks.length; i++) {
+            let fw = fireworks[i];
+            if (!fw.exploded) {
+              // Gambar peluncur
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(fw.x, fw.y, 4, 0, 2 * Math.PI);
+              ctx.fillStyle = fw.color;
+              ctx.shadowColor = fw.color;
+              ctx.shadowBlur = 16;
+              ctx.fill();
+              ctx.restore();
+              fw.y += fw.vy;
+              fw.vy += 0.18; // gravity
+              if (fw.vy > -2) {
+                // Meledak di tengah
+                fw.exploded = true;
+                const count = 32 + Math.floor(Math.random() * 16);
+                for (let j = 0; j < count; j++) {
+                  const angle = (2 * Math.PI * j) / count;
+                  const speed = 2.5 + Math.random() * 2.5;
+                  fw.particles.push({
+                    x: fw.x,
+                    y: fw.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    color: fw.color,
+                    size: 2.5 + Math.random() * 2.5
+                  });
+                }
+                // Kata romantis unik, lebih dari satu per ledakan
+                const wordCount = 2 + Math.floor(Math.random() * 2);
+                let localUsed = [];
+                let angleStep = (2 * Math.PI) / wordCount;
+                let baseAngle = Math.random() * 2 * Math.PI;
+                let radius = 60 + Math.random() * 30;
+                for (let w = 0; w < wordCount; w++) {
+                  let word;
+                  do {
+                    word = romanticWords[Math.floor(Math.random() * romanticWords.length)];
+                  } while (localUsed.includes(word));
+                  localUsed.push(word);
+                  // Posisi kata menyebar di sekitar ledakan
+                  let angle = baseAngle + w * angleStep + (Math.random() - 0.5) * 0.3;
+                  let wordX = fw.x + Math.cos(angle) * radius;
+                  let wordY = fw.y + Math.sin(angle) * radius;
+                  wordExplosions.push({
+                    text: word,
+                    x: wordX,
+                    y: wordY,
+                    alpha: 0,
+                    frame: 0
+                  });
+                }
+              }
+            } else {
+              // Gambar partikel ledakan
+              for (let k = 0; k < fw.particles.length; k++) {
+                let p = fw.particles[k];
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, 2 * Math.PI);
+                ctx.fillStyle = p.color;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 18;
+                ctx.fill();
+                ctx.restore();
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.04; // gravity
+                p.alpha -= 0.012 + Math.random() * 0.008;
+              }
+              fw.particles = fw.particles.filter(pt => pt.alpha > 0.05);
+            }
+          }
+          // Gambar kata romantis
+          for (let w = 0; w < wordExplosions.length; w++) {
+            let we = wordExplosions[w];
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, we.alpha);
+            ctx.font = '600 1.1em Poppins, Segoe UI, Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#fff';
+            ctx.fillText(we.text, we.x, we.y - we.frame * 1.1);
+            ctx.restore();
+            if (we.frame < 30) {
+              we.alpha += 0.06;
+            } else {
+              we.alpha -= 0.025;
+            }
+            we.frame++;
+          }
+          wordExplosions = wordExplosions.filter(we => we.alpha > 0);
+          fireworks = fireworks.filter(fw => !fw.exploded || fw.particles.length > 0);
+          if (frame % 22 === 0 && frame < 180) launchFirework();
+          frame++;
+          if (frame < 340 || wordExplosions.length > 0) {
+            requestAnimationFrame(drawFireworks);
+          } else {
+            document.body.removeChild(fireworksCanvas);
+          }
+        }
+        drawFireworks();
+      }
+      // Fungsi animasi kembang api
+      function showFireworks() {
+        const fireworksCanvas = document.createElement('canvas');
+        fireworksCanvas.width = window.innerWidth;
+        fireworksCanvas.height = window.innerHeight;
+        fireworksCanvas.style.position = 'fixed';
+        fireworksCanvas.style.left = 0;
+        fireworksCanvas.style.top = 0;
+        fireworksCanvas.style.width = '100vw';
+        fireworksCanvas.style.height = '100vh';
+        fireworksCanvas.style.pointerEvents = 'none';
+        fireworksCanvas.style.zIndex = 3000;
+        document.body.appendChild(fireworksCanvas);
+        const ctx = fireworksCanvas.getContext('2d');
+        const colors = ['#ffb6d5','#b6e0fe','#ffe5b4','#c1ffd7','#f7c8ff','#fff6b4','#fff','#ff006a','#b6004c','#aaffec','#ffd6e0','#e0e7ff'];
+        let fireworks = [];
+        let frame = 0;
+        function launchFirework() {
+          const x = Math.random() * fireworksCanvas.width * 0.8 + fireworksCanvas.width * 0.1;
+          const y = fireworksCanvas.height;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const count = 24 + Math.floor(Math.random() * 12);
+          let particles = [];
+          for (let i = 0; i < count; i++) {
+            const angle = (2 * Math.PI * i) / count;
+            const speed = 2 + Math.random() * 3;
+            particles.push({
+              x: x,
+              y: y,
+              vx: Math.cos(angle) * speed,
+              vy: -Math.sin(angle) * speed - (2 + Math.random() * 2),
+              alpha: 1,
+              color: color,
+              size: 2 + Math.random() * 2
+            });
+          }
+          fireworks.push({particles});
+        }
+        function drawFireworks() {
+          ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+          for (let f = 0; f < fireworks.length; f++) {
+            let firework = fireworks[f];
+            for (let p = 0; p < firework.particles.length; p++) {
+              let part = firework.particles[p];
+              ctx.save();
+              ctx.globalAlpha = part.alpha;
+              ctx.beginPath();
+              ctx.arc(part.x, part.y, part.size, 0, 2 * Math.PI);
+              ctx.fillStyle = part.color;
+              ctx.shadowColor = part.color;
+              ctx.shadowBlur = 12;
+              ctx.fill();
+              ctx.restore();
+              part.x += part.vx;
+              part.y += part.vy;
+              part.vy += 0.06; // gravity
+              part.alpha -= 0.012 + Math.random() * 0.008;
+            }
+            firework.particles = firework.particles.filter(pt => pt.alpha > 0.05);
+          }
+          fireworks = fireworks.filter(fw => fw.particles.length > 0);
+          if (frame % 18 === 0 && frame < 150) launchFirework();
+          frame++;
+          if (frame < 300) {
+            requestAnimationFrame(drawFireworks);
+          } else {
+            document.body.removeChild(fireworksCanvas);
+          }
+        }
+        drawFireworks();
+      }
+      function showConfetti() {
+        const confettiContainer = document.getElementById('confettiContainer');
+        const confettiCanvas = document.createElement('canvas');
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+        confettiCanvas.style.position = 'fixed';
+        confettiCanvas.style.left = 0;
+        confettiCanvas.style.top = 0;
+        confettiCanvas.style.width = '100vw';
+        confettiCanvas.style.height = '100vh';
+        confettiCanvas.style.pointerEvents = 'none';
+        confettiCanvas.style.zIndex = 2000;
+        confettiContainer.appendChild(confettiCanvas);
+        const ctx = confettiCanvas.getContext('2d');
+        const confettiColors = ['#ffb6d5','#b6e0fe','#ffe5b4','#c1ffd7','#f7c8ff','#fff6b4','#fff','#ff006a','#b6004c'];
+        const confetti = [];
+        for(let i=0;i<120;i++){
+          confetti.push({
+            x: Math.random()*confettiCanvas.width,
+            y: Math.random()*-confettiCanvas.height,
+            r: 6+Math.random()*10,
+            d: 2+Math.random()*4,
+            color: confettiColors[Math.floor(Math.random()*confettiColors.length)],
+            tilt: Math.random()*10-10,
+            tiltAngle: 0,
+            tiltAngleIncremental: (Math.random()*0.07)+.05
+          });
+        }
+        let frame=0;
+        function drawConfetti(){
+          ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+          for(let c of confetti){
+            ctx.beginPath();
+            ctx.lineWidth = c.r;
+            ctx.strokeStyle = c.color;
+            ctx.moveTo(c.x + c.tilt + (c.r/3), c.y);
+            ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r);
+            ctx.stroke();
+          }
+          updateConfetti();
+          frame++;
+          if(frame<120){
+            requestAnimationFrame(drawConfetti);
+          }else{
+            confettiContainer.removeChild(confettiCanvas);
+          }
+        }
+        function updateConfetti(){
+          for(let c of confetti){
+            c.y += (Math.cos(frame/10)+c.d+2)/2;
+            c.x += Math.sin(frame/20);
+            c.tiltAngle += c.tiltAngleIncremental;
+            c.tilt = Math.sin(c.tiltAngle- (frame/10)) * 15;
+            if(c.y > confettiCanvas.height){
+              c.x = Math.random()*confettiCanvas.width;
+              c.y = -10;
+            }
+          }
+        }
+        drawConfetti();
+      }
+      // Setelah inisialisasi, jalankan animasi pesan cinta dan tombol kejutan
+      setTimeout(() => {
+        loveMessage.style.display = 'block';
+        nicknameDisplay.style.animation = 'none';
+        typedMessage.innerHTML = '';
+        typeWriter(message, 0, 38);
+        // Musik otomatis play setelah pesan cinta selesai
+        setTimeout(() => {
+          bgMusic.currentTime = 0;
+          bgMusic.play().catch(() => {});
+        }, message.length * 38 + 400); // setelah animasi typeWriter selesai
+      }, 3000);
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html> 
