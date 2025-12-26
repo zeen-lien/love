@@ -482,7 +482,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (localStorage.getItem('accessGranted') !== 'true') {
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
       }
 
@@ -807,7 +807,7 @@
           <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #00fff7, #ff006a, #b600ff); margin: 0 auto 20px; border-radius: 2px;"></div>
           <p style="color: #fff; font-size: ${window.innerWidth <= 600 ? '1em' : '1.2em'}; margin-bottom: 10px; line-height: 1.6;">Terima kasih udah mau ikutin semua ini!</p>
           <p style="color: #ffb6d5; font-size: ${window.innerWidth <= 600 ? '1.1em' : '1.3em'}; margin-bottom: 35px; font-weight: 600;">Aku sayang kamu! ❤️</p>
-          <button onclick="window.location.href='index.html'" style="
+          <button onclick="window.location.href='home.html'" style="
             background: linear-gradient(135deg, #00fff7, #b600ff);
             border: none;
             padding: ${window.innerWidth <= 600 ? '12px 35px' : '15px 45px'};
