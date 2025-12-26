@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap');
+
 body {
   background: #000000;
   color: #fff;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
   margin: 0;
   min-height: 100vh;
   overflow: hidden;
@@ -10,35 +12,149 @@ body {
 .container {
   position: relative;
   z-index: 2;
-  max-width: 350px;
+  max-width: 380px;
   width: 90vw;
   margin: 10vh auto 0 auto;
-  background: rgba(10, 10, 10, 0.488);
-  border: 2px solid #610028;
-  border-radius: 18px;
   padding: 8vw 4vw;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
   text-align: center;
+}
+
+.glass-effect {
+  background: rgba(10, 10, 10, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 0, 106, 0.3);
+  border-radius: 24px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 40px rgba(255, 0, 106, 0.2);
 }
 
 h1 {
   margin-bottom: 10px;
   font-size: 2.2em;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 8px #ffb6d5aa;
+  letter-spacing: 2px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
 }
 
-input[type="text"] {
+.neon-text {
+  color: #fff;
+  text-shadow: 
+    0 0 10px #ff006a,
+    0 0 20px #ff006a,
+    0 0 30px #ff006a,
+    0 0 40px #ff006a;
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px #ff006a,
+      0 0 20px #ff006a,
+      0 0 30px #ff006a,
+      0 0 40px #ff006a;
+  }
+  50% {
+    text-shadow: 
+      0 0 5px #ff006a,
+      0 0 10px #ff006a,
+      0 0 15px #ff006a,
+      0 0 20px #ff006a;
+  }
+}
+
+.subtitle {
+  font-size: 1em;
+  color: #ffb6d5;
+  margin-bottom: 24px;
+  font-weight: 300;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+input[type="text"],
+input[type="password"] {
   width: 100%;
-  padding: 10px;
-  border: 2px solid #b6004c;
-  border-radius: 8px;
-  background: #222;
+  padding: 14px 18px;
+  border: 2px solid rgba(255, 0, 106, 0.3);
+  border-radius: 12px;
+  background: rgba(20, 20, 20, 0.6);
   color: #fff;
   outline: none;
-  margin-bottom: 16px;
   font-size: 1em;
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #ff006a;
+  background: rgba(30, 30, 30, 0.8);
+  box-shadow: 
+    0 0 20px rgba(255, 0, 106, 0.3),
+    inset 0 0 10px rgba(255, 0, 106, 0.1);
+}
+
+input::placeholder {
+  color: rgba(255, 182, 213, 0.5);
+}
+
+.futuristic-btn {
+  position: relative;
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #ff006a 0%, #b6004c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1em;
+  font-weight: 600;
+  font-family: 'Orbitron', sans-serif;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 15px rgba(255, 0, 106, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.futuristic-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 25px rgba(255, 0, 106, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.futuristic-btn:active {
+  transform: translateY(0);
+}
+
+.btn-text {
+  position: relative;
+  z-index: 2;
+}
+
+.btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.futuristic-btn:hover .btn-glow {
+  left: 100%;
 }
 
 button {
@@ -125,3 +241,151 @@ button:hover {
     color: #18181b;
   }
 } 
+
+
+#loveCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.9;
+  background: rgba(0,0,0,0.55);
+}
+
+.love-message {
+  margin-top: 20px;
+  padding: 20px;
+}
+
+/* Button Row Container */
+#buttonRow {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin-top: 40px;
+  position: relative;
+}
+
+#buttonRow.show {
+  display: flex;
+}
+
+@media (max-width: 600px) {
+  .container {
+    max-width: 92vw;
+    padding: 6vw 4vw 120px 4vw;
+    margin-top: 8vh;
+    min-height: auto;
+  }
+  
+  h1 {
+    font-size: 1.6em;
+  }
+  
+  .subtitle {
+    font-size: 0.9em;
+  }
+  
+  .love-message {
+    font-size: 0.95em;
+    padding: 12px;
+    padding-bottom: 20px;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    font-size: 0.95em;
+    padding: 12px 16px;
+  }
+  
+  .futuristic-btn {
+    font-size: 1em;
+    padding: 12px 20px;
+  }
+  
+  #buttonRow {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 40px) !important;
+    max-width: calc(100vw - 40px) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    z-index: 1000 !important;
+    background: transparent !important;
+  }
+  
+  #buttonRow .futuristic-btn {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  #againBtn, #redirectBtn {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+}
+
+/* SweetAlert2 Custom Styling */
+.swal2-popup {
+  font-family: 'Poppins', sans-serif !important;
+  border: 2px solid rgba(255, 0, 106, 0.3) !important;
+  box-shadow: 0 0 40px rgba(255, 0, 106, 0.3) !important;
+}
+
+.swal2-title {
+  font-family: 'Orbitron', sans-serif !important;
+  color: #fff !important;
+}
+
+
+/* Toggle Password Button */
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.3s ease;
+  margin: 0;
+}
+
+.toggle-password:hover {
+  background: transparent;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.toggle-password svg {
+  transition: all 0.3s ease;
+}
+
+.toggle-password:hover svg path,
+.toggle-password:hover svg circle,
+.toggle-password:hover svg line {
+  stroke: #ffb6d5;
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group input[type="password"],
+.input-group input[type="text"] {
+  padding-right: 45px;
+}

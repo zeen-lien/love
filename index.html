@@ -5,35 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hai, Sayang!</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .heart-icon {
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Hai, Sayang! 💖</h1>
-    <p>Ada sesuatu spesial buat kamu...</p>
+  <div class="container glass-effect">
+    <div style="display:flex; justify-content:center; margin-bottom:12px;">
+      <svg class="heart-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff006a;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffb6d5;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.57831 8.50903 2.99871 7.05 2.99871C5.59096 2.99871 4.19169 3.57831 3.16 4.61C2.1283 5.64169 1.54871 7.04097 1.54871 8.5C1.54871 9.95903 2.1283 11.3583 3.16 12.39L4.22 13.45L12 21.23L19.78 13.45L20.84 12.39C21.351 11.8792 21.7563 11.2728 22.0329 10.6053C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.06211 22.0329 6.39464C21.7563 5.72718 21.351 5.12075 20.84 4.61Z" fill="url(#heartGradient)" stroke="#ffb6d5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1 class="neon-text">Hai, Sayang!</h1>
+    <p class="subtitle">Ada sesuatu spesial buat kamu</p>
     <form id="nameForm">
-      <input type="text" id="nickname" placeholder="Masukin nama panggilan kamu..." required>
-      <button type="submit">Lanjut</button>
+      <div class="input-group">
+        <input type="text" id="nickname" placeholder="Nama panggilan kamu..." required>
+        <span class="input-border"></span>
+      </div>
+      <button type="submit" class="futuristic-btn">
+        <span class="btn-text">Lanjut</span>
+        <span class="btn-glow"></span>
+      </button>
     </form>
     <audio id="bgMusic" src="assets/music/lagu.mp3" loop></audio>
   </div>
   <canvas id="loveCanvas"></canvas>
   <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Proteksi: cek akses
+  if (localStorage.getItem('accessGranted') !== 'true') {
+    window.location.href = 'login.html';
+    return;
+  }
+
   // Animasi bintang
   const canvas = document.getElementById('loveCanvas');
   const ctx = canvas.getContext('2d');
-  function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
+  });
 
   let stars = [];
-  function randomStar() {
-    const colors = [
-      '#ffb6d5', '#b6e0fe', '#ffe5b4', '#c1ffd7', '#f7c8ff', '#fff6b4', '#fff', '#ff006a', '#b6004c', '#aaffec', '#ffd6e0', '#e0e7ff'
-    ];
+  const colors = ['#ffb6d5', '#b6e0fe', '#ffe5b4', '#c1ffd7', '#f7c8ff', '#fff6b4', '#fff', '#ff006a', '#b6004c', '#aaffec'];
+  
+  function createStar() {
     return {
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -45,31 +78,31 @@ document.addEventListener('DOMContentLoaded', function() {
       fall: Math.random() < 0.25
     };
   }
-  function drawStar(star) {
-    ctx.save();
-    ctx.globalAlpha = star.alpha;
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
-    ctx.fillStyle = star.color;
-    ctx.shadowColor = star.color;
-    ctx.shadowBlur = 8;
-    ctx.fill();
-    ctx.restore();
-  }
-  function animateStars() {
+
+  function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (stars.length < 120) stars.push(randomStar());
-    for (let i = 0; i < stars.length; i++) {
-      let s = stars[i];
-      drawStar(s);
-      s.alpha += 0.008 * s.alphaDir * (0.5 + Math.random());
+    if (stars.length < 120) stars.push(createStar());
+    
+    stars.forEach((s, i) => {
+      ctx.save();
+      ctx.globalAlpha = s.alpha;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+      ctx.fillStyle = s.color;
+      ctx.shadowColor = s.color;
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.restore();
+
+      s.alpha += 0.008 * s.alphaDir;
       if (s.alpha > 1) { s.alpha = 1; s.alphaDir = -1; }
       if (s.alpha < 0.15) { s.alpha = 0.15; s.alphaDir = 1; }
+
       if (s.fall) {
         s.y += s.speed * 2.5;
         s.x += (Math.random() - 0.5) * 0.5;
         if (s.y > canvas.height + 10) {
-          stars[i] = randomStar();
+          stars[i] = createStar();
           stars[i].y = -5;
         }
       } else {
@@ -80,26 +113,40 @@ document.addEventListener('DOMContentLoaded', function() {
         if (s.y < 0) s.y = canvas.height;
         if (s.y > canvas.height) s.y = 0;
       }
-    }
-    requestAnimationFrame(animateStars);
+    });
+    requestAnimationFrame(animate);
   }
-  animateStars();
+  animate();
 
   // Form logic
   const nameForm = document.getElementById('nameForm');
-  if (nameForm) {
-    nameForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const nickname = document.getElementById('nickname').value;
-      localStorage.setItem('nickname', nickname);
-      const bgMusic = document.getElementById('bgMusic');
+  nameForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nickname = document.getElementById('nickname').value;
+    localStorage.setItem('nickname', nickname);
+    const bgMusic = document.getElementById('bgMusic');
+    
+    Swal.fire({
+      title: `Hai, ${nickname}!`,
+      html: '<div style="font-size:1.1em;">Siap-siap ya...</div>',
+      icon: 'success',
+      background: 'rgba(10, 10, 10, 0.95)',
+      color: '#fff',
+      iconColor: '#ff006a',
+      timer: 1500,
+      showConfirmButton: false,
+      showClass: {
+        popup: 'animate__animated animate__zoomIn'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__zoomOut'
+      }
+    }).then(() => {
       bgMusic.currentTime = 0;
       bgMusic.play();
-      setTimeout(function() {
-        window.location.href = 'next.html';
-      }, 800); // kasih jeda biar musik sempat play
+      window.location.href = 'next.html';
     });
-  }
+  });
 });
 </script>
 </body>

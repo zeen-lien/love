@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Akses Khusus</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .lock-icon {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container glass-effect">
+    <div style="display:flex; justify-content:center; margin-bottom:16px;">
+      <svg class="lock-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff006a;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffb6d5;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <path d="M17 11H7C5.89543 11 5 11.8954 5 13V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V13C19 11.8954 18.1046 11 17 11Z" stroke="url(#lockGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="16" r="1.5" fill="url(#lockGradient)"/>
+        <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="url(#lockGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1 class="neon-text">Akses Khusus</h1>
+    <p class="subtitle">Masukkan kode akses untuk melanjutkan</p>
+    <form id="loginForm">
+      <div class="input-group">
+        <input type="password" id="accessCode" placeholder="••••••••" required autocomplete="off" maxlength="8">
+        <button type="button" class="toggle-password" id="togglePassword">
+          <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#ff006a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="3" stroke="#ff006a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg id="eyeOffIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke="#ff006a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="1" y1="1" x2="23" y2="23" stroke="#ff006a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="input-border"></span>
+      </div>
+      <button type="submit" class="futuristic-btn">
+        <span class="btn-text">Masuk</span>
+        <span class="btn-glow"></span>
+      </button>
+    </form>
+  </div>
+  <canvas id="loveCanvas"></canvas>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const correctCode = '21122025';
+  const loginForm = document.getElementById('loginForm');
+  const accessCode = document.getElementById('accessCode');
+  const togglePassword = document.getElementById('togglePassword');
+  const eyeIcon = document.getElementById('eyeIcon');
+  const eyeOffIcon = document.getElementById('eyeOffIcon');
+
+  // Toggle password visibility
+  togglePassword.addEventListener('click', function() {
+    const type = accessCode.getAttribute('type') === 'password' ? 'text' : 'password';
+    accessCode.setAttribute('type', type);
+    
+    if (type === 'text') {
+      eyeIcon.style.display = 'none';
+      eyeOffIcon.style.display = 'block';
+    } else {
+      eyeIcon.style.display = 'block';
+      eyeOffIcon.style.display = 'none';
+    }
+  });
+
+  // Cek apakah sudah login sebelumnya
+  if (localStorage.getItem('accessGranted') === 'true') {
+    window.location.href = 'index.html';
+  }
+
+  loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (accessCode.value === correctCode) {
+      localStorage.setItem('accessGranted', 'true');
+      Swal.fire({
+        title: 'Akses Diterima!',
+        html: '<div style="font-size:1.1em;">Selamat datang, sayang...</div>',
+        icon: 'success',
+        background: 'rgba(10, 10, 10, 0.95)',
+        color: '#fff',
+        iconColor: '#ff006a',
+        confirmButtonText: 'Lanjutkan',
+        confirmButtonColor: '#ff006a',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+        }
+      }).then(() => {
+        window.location.href = 'index.html';
+      });
+    } else {
+      accessCode.value = '';
+      Swal.fire({
+        title: 'Kode Salah!',
+        html: '<div style="font-size:1em;">Coba lagi ya...</div>',
+        icon: 'error',
+        background: 'rgba(10, 10, 10, 0.95)',
+        color: '#fff',
+        iconColor: '#ff006a',
+        confirmButtonText: 'Coba Lagi',
+        confirmButtonColor: '#ff006a',
+        showClass: {
+          popup: 'animate__animated animate__shakeX'
+        }
+      });
+    }
+  });
+
+  // Animasi bintang
+  const canvas = document.getElementById('loveCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  let stars = [];
+  const colors = ['#ffb6d5', '#b6e0fe', '#ffe5b4', '#c1ffd7', '#f7c8ff', '#fff6b4', '#fff'];
+  
+  function createStar() {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: 0.7 + Math.random() * 2.5,
+      alpha: 0.3 + Math.random() * 0.7,
+      alphaDir: Math.random() > 0.5 ? 1 : -1,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    };
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (stars.length < 100) stars.push(createStar());
+    
+    stars.forEach(s => {
+      ctx.save();
+      ctx.globalAlpha = s.alpha;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+      ctx.fillStyle = s.color;
+      ctx.shadowColor = s.color;
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.restore();
+
+      s.alpha += 0.008 * s.alphaDir;
+      if (s.alpha > 1) { s.alpha = 1; s.alphaDir = -1; }
+      if (s.alpha < 0.15) { s.alpha = 0.15; s.alphaDir = 1; }
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+});
+</script>
+</body>
+</html>

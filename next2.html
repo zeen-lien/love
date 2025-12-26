@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Holographic Love Journey</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Stage Container */
+    .stage-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .stage-container.active {
+      display: flex;
+    }
+
+    /* Holographic Entrance */
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes hologramFlicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    .hologram-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2em;
+      color: #00fff7;
+      text-shadow: 0 0 20px #00fff7, 0 0 40px #00fff7;
+      animation: glitch 0.3s infinite, hologramFlicker 2s infinite;
+    }
+
+    .loading-bar {
+      width: 300px;
+      height: 4px;
+      background: rgba(0, 255, 247, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .loading-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #00fff7, #ff006a);
+      width: 0%;
+      animation: loadProgress 3s ease-out forwards;
+      box-shadow: 0 0 10px #00fff7;
+    }
+
+    @keyframes loadProgress {
+      to { width: 100%; }
+    }
+
+    /* 3D Cards */
+    .cards-container {
+      perspective: 1000px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
+      max-width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* HAPUS SCROLLBAR JELEK */
+    .cards-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cards-container {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .card-3d {
+      width: 250px;
+      height: 180px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+
+    .card-3d.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, rgba(0, 255, 247, 0.2), rgba(182, 0, 255, 0.2));
+      border: 2px solid #00fff7;
+      box-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
+    }
+    
+    .card-front span {
+      color: #00fff7;
+      text-shadow: 0 0 15px #00fff7;
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, rgba(0, 255, 247, 0.4), rgba(182, 0, 255, 0.4));
+      border: 2px solid #00fff7;
+      box-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
+      transform: rotateY(180deg);
+      font-size: 1em;
+      color: #fff;
+      text-align: center;
+      line-height: 1.4;
+      text-shadow: 0 0 10px rgba(0, 255, 247, 0.8);
+      font-weight: 600;
+    }
+
+    /* Matrix Rain */
+    .matrix-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .matrix-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2em;
+      color: #00fff7;
+      text-shadow: 0 0 30px #00fff7, 0 0 60px #00fff7, 0 0 90px #00fff7;
+      opacity: 0;
+      animation: fadeInMessage 2s ease-in forwards;
+      text-align: center;
+      padding: 0 20px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 30px 40px;
+      border-radius: 20px;
+      border: 2px solid #00fff7;
+      box-shadow: 0 0 40px rgba(0, 255, 247, 0.6);
+    }
+
+    @keyframes fadeInMessage {
+      to { opacity: 1; }
+    }
+
+    /* Particle Gallery */
+    .gallery-container {
+      position: relative;
+      width: 80vw;
+      max-width: 600px;
+      height: 400px;
+    }
+
+    .gallery-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+      border: 3px solid #00fff7;
+      box-shadow: 0 0 40px rgba(0, 255, 247, 0.6);
+      transition: transform 0.3s;
+    }
+
+    .gallery-image:hover {
+      transform: scale(1.05);
+    }
+
+    .gallery-nav {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+    }
+
+    .gallery-btn {
+      background: linear-gradient(135deg, #ff006a, #b6004c);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 0, 106, 0.5);
+      transition: all 0.3s;
+    }
+
+    .gallery-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(255, 0, 106, 0.8);
+    }
+
+    /* Holographic Letter */
+    .envelope-container {
+      position: relative;
+      width: 350px;
+      height: 250px;
+      cursor: pointer;
+      animation: floatEnvelope 3s ease-in-out infinite;
+    }
+
+    @keyframes floatEnvelope {
+      0%, 100% { transform: translateY(0) rotateY(0deg); }
+      50% { transform: translateY(-20px) rotateY(10deg); }
+    }
+
+    .envelope {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 0, 106, 0.5), rgba(182, 0, 76, 0.5));
+      border: 3px solid #ff006a;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 0, 106, 0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      font-size: 1.3em;
+      text-shadow: 0 0 10px #fff;
+      transition: all 0.3s;
+      padding: 30px;
+    }
+
+    .envelope:hover {
+      box-shadow: 0 0 30px rgba(255, 0, 106, 0.5);
+      transform: scale(1.05);
+    }
+
+    .envelope-icon {
+      animation: iconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .letter-content {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      border: 3px solid #00fff7;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 85vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 5000;
+      box-shadow: 0 0 30px rgba(0, 255, 247, 0.3);
+      display: none;
+    }
+
+    /* HAPUS SCROLLBAR JELEK */
+    .letter-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    .letter-content {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    @media (max-width: 600px) {
+      .envelope-container {
+        width: 280px;
+        height: 200px;
+      }
+      
+      .envelope {
+        font-size: 1.1em;
+        padding: 20px;
+        gap: 15px;
+      }
+      
+      .envelope-icon svg {
+        width: 60px;
+        height: 60px;
+      }
+
+      .letter-content {
+        max-width: 90vw;
+        max-height: 80vh;
+        padding: 30px 20px;
+      }
+
+      .letter-text {
+        font-size: 1em;
+      }
+    }
+
+    .letter-content.show {
+      display: block;
+      animation: letterAppear 1s ease-out;
+    }
+
+    @keyframes letterAppear {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .letter-text {
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      font-size: 1.2em;
+      line-height: 1.8;
+      text-shadow: none;
+      white-space: pre-wrap;
+    }
+
+    /* Progress Indicator - HIDDEN */
+    .progress-indicator {
+      display: none;
+    }
+
+    /* Next Stage Button */
+    .next-stage-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #00fff7, #b600ff);
+      border: none;
+      padding: 15px 40px;
+      border-radius: 15px;
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 1.1em;
+      cursor: pointer;
+      z-index: 9998;
+      box-shadow: 0 0 30px rgba(0, 255, 247, 0.8);
+      transition: all 0.3s;
+      display: none;
+    }
+
+    .next-stage-btn.show {
+      display: block;
+      animation: btnPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes btnPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+    }
+
+    .next-stage-btn:hover {
+      box-shadow: 0 0 50px rgba(0, 255, 247, 1);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hologram-text { font-size: 1.3em; }
+      .loading-bar { width: 200px; }
+      .card-3d { width: 150px; height: 120px; }
+      .card-back { font-size: 0.85em; }
+      .matrix-message { font-size: 1.3em; }
+      .gallery-container { width: 90vw; height: 300px; }
+      .envelope-container { width: 200px; height: 140px; }
+      .letter-content { padding: 25px; }
+      .letter-text { font-size: 1em; }
+      .progress-indicator { top: 10px; right: 10px; padding: 10px 15px; font-size: 0.9em; }
+      .next-stage-btn { padding: 12px 30px; font-size: 1em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-indicator" id="progressIndicator">Stage 1/5</div>
+  <button class="next-stage-btn" id="nextStageBtn">Lanjut</button>
+  <canvas id="loveCanvas"></canvas>
+  <audio id="bgMusic" src="assets/music/lagu2.mp3" loop></audio>
+
+
+  <!-- Stage 1: Holographic Entrance -->
+  <div class="stage-container active" id="stage1">
+    <div style="text-align: center;">
+      <div class="hologram-text" id="hologramText">Decrypting message...</div>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage 2: 3D Cards -->
+  <div class="stage-container" id="stage2">
+    <div class="cards-container" id="cardsContainer"></div>
+  </div>
+
+  <!-- Stage 3: Matrix Rain -->
+  <div class="stage-container" id="stage3">
+    <canvas class="matrix-canvas" id="matrixCanvas"></canvas>
+    <div class="matrix-message" id="matrixMessage"></div>
+  </div>
+
+  <!-- Stage 4: Particle Gallery -->
+  <div class="stage-container" id="stage4">
+    <div class="gallery-container">
+      <img class="gallery-image" id="galleryImage" src="" alt="Memory">
+      <div class="gallery-nav">
+        <button class="gallery-btn" id="prevBtn">← Prev</button>
+        <button class="gallery-btn" id="nextBtn">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage 5: Holographic Letter -->
+  <div class="stage-container" id="stage5">
+    <div class="envelope-container" id="envelopeContainer">
+      <div class="envelope">
+        <div class="envelope-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="envelopeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#ff006a;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ffb6d5;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="url(#envelopeGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span style="text-align: center; line-height: 1.4;">Klik untuk<br>membuka surat</span>
+      </div>
+    </div>
+    <div class="letter-content" id="letterContent">
+      <div class="letter-text" id="letterText"></div>
+    </div>
+  </div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (localStorage.getItem('accessGranted') !== 'true') {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const nickname = localStorage.getItem('nickname') || 'Sayang';
+      let currentStage = 1;
+      const totalStages = 5;
+      const bgMusic = document.getElementById('bgMusic');
+      const nextStageBtn = document.getElementById('nextStageBtn');
+
+      // Play musik baru dengan fade in
+      setTimeout(() => {
+        bgMusic.volume = 0;
+        bgMusic.play().catch(() => {});
+        let fadeIn = setInterval(() => {
+          if (bgMusic.volume < 0.9) {
+            bgMusic.volume += 0.1;
+          } else {
+            bgMusic.volume = 1;
+            clearInterval(fadeIn);
+          }
+        }, 100);
+      }, 500);
+
+      // Background animation
+      const canvas = document.getElementById('loveCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      let particles = [];
+      function createParticle() {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2,
+          color: ['#00fff7', '#ff006a', '#b600ff'][Math.floor(Math.random() * 3)],
+          alpha: Math.random() * 0.5 + 0.3
+        };
+      }
+
+      function animateBackground() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        if (particles.length < 100) particles.push(createParticle());
+        
+        particles.forEach((p, i) => {
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          
+          p.x += p.vx;
+          p.y += p.vy;
+          
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        });
+        
+        requestAnimationFrame(animateBackground);
+      }
+      animateBackground();
+
+
+      // Stage 1: Holographic Entrance
+      function startStage1() {
+        const hologramText = document.getElementById('hologramText');
+        const names = nickname.split('');
+        let nameIndex = 0;
+        
+        setTimeout(() => {
+          const nameInterval = setInterval(() => {
+            if (nameIndex < names.length) {
+              hologramText.textContent = names.slice(0, nameIndex + 1).join('');
+              nameIndex++;
+            } else {
+              clearInterval(nameInterval);
+              setTimeout(() => {
+                nextStageBtn.classList.add('show');
+              }, 500);
+            }
+          }, 200);
+        }, 3000);
+      }
+
+      // Stage 2: 3D Cards
+      const reasons = [
+        'Kamu selalu bikin aku tersenyum',
+        'Kamu ngerti aku banget',
+        'Kamu selalu support aku',
+        'Kamu lucu dan menggemaskan',
+        'Kamu bikin hari-hariku indah',
+        'Kamu selalu ada buat aku',
+        'Kamu spesial banget',
+        'Kamu bikin aku jadi lebih baik',
+        'Kamu adalah yang terbaik',
+        'Aku sayang kamu!'
+      ];
+
+      function startStage2() {
+        const container = document.getElementById('cardsContainer');
+        container.innerHTML = '';
+        
+        reasons.forEach((reason, index) => {
+          const card = document.createElement('div');
+          card.className = 'card-3d';
+          card.innerHTML = `
+            <div class="card-face card-front">
+              <span style="font-family: Orbitron; color: #fff; font-size: 1.5em;">#${index + 1}</span>
+            </div>
+            <div class="card-face card-back">${reason}</div>
+          `;
+          
+          card.onclick = function() {
+            this.classList.toggle('flipped');
+            checkAllFlipped();
+          };
+          
+          setTimeout(() => {
+            container.appendChild(card);
+          }, index * 100);
+        });
+      }
+
+      function checkAllFlipped() {
+        const cards = document.querySelectorAll('.card-3d');
+        const allFlipped = Array.from(cards).every(card => card.classList.contains('flipped'));
+        if (allFlipped) {
+          setTimeout(() => {
+            nextStageBtn.classList.add('show');
+          }, 500);
+        }
+      }
+
+
+      // Stage 3: Matrix Rain
+      function startStage3() {
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+        
+        const chars = 'ILOVEYOU❤️💖✨';
+        const fontSize = 16;
+        const columns = matrixCanvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        
+        function drawMatrix() {
+          matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+          matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+          
+          // Ganti warna matrix jadi cyan/purple mix
+          const colors = ['#00fff7', '#b600ff', '#ff006a'];
+          matrixCtx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+          matrixCtx.font = fontSize + 'px monospace';
+          
+          for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            matrixCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+            
+            if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+              drops[i] = 0;
+            }
+            drops[i]++;
+          }
+        }
+        
+        const matrixInterval = setInterval(drawMatrix, 50);
+        
+        setTimeout(() => {
+          clearInterval(matrixInterval);
+          const message = `${nickname},\nkamu adalah segalanya buat aku!`;
+          document.getElementById('matrixMessage').textContent = message;
+          setTimeout(() => {
+            nextStageBtn.classList.add('show');
+          }, 2000);
+        }, 5000);
+      }
+
+      // Stage 4: Gallery
+      const galleryImages = [
+        'assets/images/foto1.jpg',
+        'assets/images/foto2.jpg',
+        'assets/images/foto3.jpg',
+        'assets/images/foto4.jpg'
+      ];
+      let currentImageIndex = 0;
+
+      function startStage4() {
+        const galleryImage = document.getElementById('galleryImage');
+        galleryImage.src = galleryImages[currentImageIndex];
+        
+        document.getElementById('prevBtn').onclick = () => {
+          currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+          galleryImage.src = galleryImages[currentImageIndex];
+        };
+        
+        document.getElementById('nextBtn').onclick = () => {
+          currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+          galleryImage.src = galleryImages[currentImageIndex];
+        };
+        
+        setTimeout(() => {
+          nextStageBtn.classList.add('show');
+        }, 3000);
+      }
+
+
+      // Stage 5: Holographic Letter
+      function startStage5() {
+        const envelope = document.getElementById('envelopeContainer');
+        const letterContent = document.getElementById('letterContent');
+        const letterText = document.getElementById('letterText');
+        
+        envelope.onclick = function() {
+          this.style.display = 'none';
+          letterContent.classList.add('show');
+          
+          const finalMessage = `Hai ${nickname},\n\nAku cuma mau bilang, terima kasih udah jadi bagian dari hidup aku. Kamu bikin semuanya jadi lebih indah dan bermakna.\n\nAku harap kita bisa terus bersama, saling support, dan bahagia bareng. Kamu itu hadiah terindah buat aku.\n\nI love you so much! ❤️\n\nSelamanya,\nYang sayang kamu`;
+          
+          let charIndex = 0;
+          const typeInterval = setInterval(() => {
+            if (charIndex < finalMessage.length) {
+              letterText.textContent = finalMessage.substring(0, charIndex + 1);
+              charIndex++;
+            } else {
+              clearInterval(typeInterval);
+              setTimeout(() => {
+                const keepBtn = document.createElement('button');
+                keepBtn.className = 'futuristic-btn';
+                keepBtn.style.position = 'static';
+                keepBtn.style.marginTop = '30px';
+                keepBtn.style.transform = 'none';
+                keepBtn.innerHTML = '<span class="btn-text">Simpan di Hati ❤️</span><span class="btn-glow"></span>';
+                keepBtn.onclick = function() {
+                  showFinalSurprise();
+                };
+                letterContent.appendChild(keepBtn);
+              }, 1000);
+            }
+          }, 30);
+        };
+      }
+
+      function showFinalSurprise() {
+        // Overlay backdrop
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.background = 'rgba(0, 0, 0, 0.8)';
+        overlay.style.zIndex = 9999;
+        overlay.style.animation = 'fadeIn 0.5s ease-out';
+        document.body.appendChild(overlay);
+
+        const surpriseDiv = document.createElement('div');
+        surpriseDiv.style.position = 'fixed';
+        surpriseDiv.style.top = '50%';
+        surpriseDiv.style.left = '50%';
+        surpriseDiv.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        surpriseDiv.style.background = 'linear-gradient(135deg, rgba(10, 10, 30, 0.98), rgba(30, 10, 30, 0.98))';
+        surpriseDiv.style.backdropFilter = 'blur(20px)';
+        surpriseDiv.style.border = '3px solid';
+        surpriseDiv.style.borderImage = 'linear-gradient(135deg, #00fff7, #ff006a, #b600ff) 1';
+        surpriseDiv.style.borderRadius = '30px';
+        surpriseDiv.style.padding = window.innerWidth <= 600 ? '35px 25px' : '50px 60px';
+        surpriseDiv.style.textAlign = 'center';
+        surpriseDiv.style.zIndex = 10000;
+        surpriseDiv.style.boxShadow = '0 20px 60px rgba(0, 255, 247, 0.3), 0 0 100px rgba(255, 0, 106, 0.2)';
+        surpriseDiv.style.animation = 'modalAppear 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+        surpriseDiv.style.maxWidth = window.innerWidth <= 600 ? '85vw' : '500px';
+        
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes modalAppear {
+            0% {
+              transform: translate(-50%, -50%) scale(0.5);
+              opacity: 0;
+            }
+            100% {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 1;
+            }
+          }
+          @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        surpriseDiv.innerHTML = `
+          <div style="margin-bottom: 25px;">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: sparkle 2s ease-in-out infinite;">
+              <defs>
+                <linearGradient id="completeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#00fff7;stop-opacity:1" />
+                  <stop offset="50%" style="stop-color:#ff006a;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#b600ff;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <circle cx="12" cy="12" r="10" stroke="url(#completeGrad)" stroke-width="2" fill="none"/>
+              <path d="M8 12L11 15L16 9" stroke="url(#completeGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2 style="font-family: Orbitron, sans-serif; background: linear-gradient(135deg, #00fff7, #ff006a, #b600ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px; font-size: ${window.innerWidth <= 600 ? '1.6em' : '2.2em'}; font-weight: 900;">Journey Complete!</h2>
+          <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #00fff7, #ff006a, #b600ff); margin: 0 auto 20px; border-radius: 2px;"></div>
+          <p style="color: #fff; font-size: ${window.innerWidth <= 600 ? '1em' : '1.2em'}; margin-bottom: 10px; line-height: 1.6;">Terima kasih udah mau ikutin semua ini!</p>
+          <p style="color: #ffb6d5; font-size: ${window.innerWidth <= 600 ? '1.1em' : '1.3em'}; margin-bottom: 35px; font-weight: 600;">Aku sayang kamu! ❤️</p>
+          <button onclick="window.location.href='index.html'" style="
+            background: linear-gradient(135deg, #00fff7, #b600ff);
+            border: none;
+            padding: ${window.innerWidth <= 600 ? '12px 35px' : '15px 45px'};
+            border-radius: 15px;
+            color: #000;
+            font-family: Orbitron, sans-serif;
+            font-weight: 700;
+            font-size: ${window.innerWidth <= 600 ? '1em' : '1.1em'};
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 255, 247, 0.4);
+          " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 30px rgba(0, 255, 247, 0.6)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0, 255, 247, 0.4)';">
+            Mulai Lagi
+          </button>
+        `;
+        
+        document.body.appendChild(surpriseDiv);
+        
+        // Confetti explosion
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            createConfetti();
+          }, i * 50);
+        }
+      }
+
+      function createConfetti() {
+        const confetti = document.createElement('div');
+        confetti.textContent = ['❤️', '💖', '✨', '💕', '💝'][Math.floor(Math.random() * 5)];
+        confetti.style.position = 'fixed';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-50px';
+        confetti.style.fontSize = (20 + Math.random() * 30) + 'px';
+        confetti.style.zIndex = 9999;
+        confetti.style.pointerEvents = 'none';
+        document.body.appendChild(confetti);
+        
+        let pos = -50;
+        const fall = setInterval(() => {
+          pos += 5;
+          confetti.style.top = pos + 'px';
+          if (pos > window.innerHeight) {
+            clearInterval(fall);
+            confetti.remove();
+          }
+        }, 20);
+      }
+
+
+      // Stage Navigation
+      function goToStage(stage) {
+        document.querySelectorAll('.stage-container').forEach(s => s.classList.remove('active'));
+        document.getElementById(`stage${stage}`).classList.add('active');
+        currentStage = stage;
+        nextStageBtn.classList.remove('show');
+        
+        switch(stage) {
+          case 1: startStage1(); break;
+          case 2: startStage2(); break;
+          case 3: startStage3(); break;
+          case 4: startStage4(); break;
+          case 5: startStage5(); break;
+        }
+      }
+
+      nextStageBtn.onclick = function() {
+        if (currentStage < totalStages) {
+          goToStage(currentStage + 1);
+        }
+      };
+
+      // Start
+      startStage1();
+    });
+  </script>
+</body>
+</html>
