@@ -270,6 +270,18 @@
       max-width: 1200px;
       padding: 40px 20px;
       text-align: center;
+      max-height: 85vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .polaroid-gallery-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .polaroid-gallery-container {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
 
     .polaroid-wall {
@@ -376,6 +388,11 @@
       .polaroid-wall {
         gap: 30px;
       }
+
+      .polaroid-gallery-container {
+        max-height: 75vh;
+        padding: 30px 15px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -390,6 +407,16 @@
       
       .polaroid-caption {
         font-size: 0.8em;
+      }
+
+      .polaroid-gallery-container {
+        max-height: 70vh;
+        padding: 25px 10px;
+      }
+
+      .polaroid-wall {
+        gap: 25px;
+        padding: 15px;
       }
     }
 
@@ -448,58 +475,6 @@
 
     .envelope-3d:not(.opened):hover {
       animation: none;
-    }
-
-    /* Achievement notification */
-    .achievement {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      background: linear-gradient(135deg, rgba(0, 255, 247, 0.95), rgba(182, 0, 255, 0.95));
-      border: 3px solid #fff;
-      border-radius: 20px;
-      padding: 30px 50px;
-      z-index: 10000;
-      text-align: center;
-      box-shadow: 0 0 50px rgba(0, 255, 247, 0.8);
-      animation: achievementPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-    }
-
-    @keyframes achievementPop {
-      0% { transform: translate(-50%, -50%) scale(0); }
-      100% { transform: translate(-50%, -50%) scale(1); }
-    }
-
-    .achievement-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.8em;
-      color: #000;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-
-    .achievement-text {
-      font-size: 1.2em;
-      color: #000;
-      font-weight: 600;
-    }
-
-    /* Progress indicator */
-    .progress-bar-container {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(10, 10, 10, 0.8);
-      border: 2px solid #00fff7;
-      border-radius: 30px;
-      padding: 10px 25px;
-      z-index: 9997;
-      font-family: 'Orbitron', sans-serif;
-      color: #00fff7;
-      font-size: 1.1em;
-      box-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
     }
 
     /* Next Button */
@@ -633,13 +608,12 @@
 
   <!-- Stage 3: 20 Love Letters -->
   <div class="birthday-stage" id="stage3">
-    <div class="progress-bar-container" id="progressBar">0/20 Amplop Dibuka</div>
     <div class="letters-container" id="lettersContainer"></div>
   </div>
 
   <!-- Stage 4: Photo Gallery -->
   <div class="birthday-stage" id="stage4">
-    <div class="polaroid-gallery-container">
+    <div class="polaroid-gallery-container" onclick="handleGalleryClick(event)">
       <div class="countdown-title" style="margin-bottom: 40px;">Kenangan Bersama</div>
       <div class="polaroid-wall" id="polaroidWall"></div>
     </div>
@@ -876,7 +850,6 @@ Aku memilihmu bukan untuk diselamatkan. Aku memilihmu karena akhirnya, aku ingin
         const container = document.getElementById('lettersContainer');
         container.innerHTML = '';
         openedLetters = 0;
-        updateProgressBar();
         
         loveLetters.forEach((letter, index) => {
           const envelope = document.createElement('div');
@@ -897,16 +870,12 @@ Aku memilihmu bukan untuk diselamatkan. Aku memilihmu karena akhirnya, aku ingin
             if (!this.classList.contains('opened')) {
               this.classList.add('opened');
               openedLetters++;
-              updateProgressBar();
               
               // Confetti explosion
               createMiniConfetti(this);
               
               // Floating hearts
               createFloatingHearts(this);
-              
-              // Achievement unlock
-              checkAchievement(openedLetters);
               
               // Cek apakah semua amplop udah dibuka
               if (openedLetters === loveLetters.length) {
@@ -927,7 +896,7 @@ Aku memilihmu bukan untuk diselamatkan. Aku memilihmu karena akhirnya, aku ingin
       }
 
       function updateProgressBar() {
-        document.getElementById('progressBar').textContent = `${openedLetters}/20 Amplop Dibuka`;
+        // Removed - not used anymore
       }
 
       function createMiniConfetti(element) {
@@ -1017,31 +986,11 @@ Aku memilihmu bukan untuk diselamatkan. Aku memilihmu karena akhirnya, aku ingin
       }
 
       function checkAchievement(count) {
-        const achievements = {
-          5: 'Pembuka Pertama! 🎉',
-          10: 'Setengah Jalan! 🌟',
-          15: 'Hampir Selesai! 💫',
-          20: 'Semua Terbuka! 🎊'
-        };
-        
-        if (achievements[count]) {
-          showAchievement(achievements[count]);
-        }
+        // Removed - not used anymore
       }
 
       function showAchievement(text) {
-        const achievement = document.createElement('div');
-        achievement.className = 'achievement';
-        achievement.innerHTML = `
-          <div class="achievement-title">Achievement Unlocked!</div>
-          <div class="achievement-text">${text}</div>
-        `;
-        document.body.appendChild(achievement);
-        
-        setTimeout(() => {
-          achievement.style.animation = 'achievementPop 0.3s ease-out reverse forwards';
-          setTimeout(() => achievement.remove(), 300);
-        }, 2000);
+        // Removed - not used anymore
       }
 
       function showFinalFireworks() {
@@ -1120,6 +1069,15 @@ Aku memilihmu bukan untuk diselamatkan. Aku memilihmu karena akhirnya, aku ingin
           wall.classList.remove('has-zoomed');
         }
       }
+
+      // Handle click di luar polaroid untuk close
+      window.handleGalleryClick = function(e) {
+        if (e.target.classList.contains('polaroid-gallery-container') || 
+            e.target.classList.contains('polaroid-wall') ||
+            e.target.classList.contains('countdown-title')) {
+          closePolaroid();
+        }
+      };
 
       window.prevPhoto = function() {
         // Not used anymore
