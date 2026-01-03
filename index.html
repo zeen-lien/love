@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Cek apakah sudah login sebelumnya
   if (localStorage.getItem('accessGranted') === 'true') {
-    window.location.href = 'home.html';
+    window.location.href = 'choice.html';
   }
 
   loginForm.addEventListener('submit', function(e) {
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
           popup: 'animate__animated animate__fadeOutUp'
         }
       }).then(() => {
-        window.location.href = 'home.html';
+        window.location.href = 'choice.html';
       });
     } else {
       accessCode.value = '';

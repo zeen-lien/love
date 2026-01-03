@@ -335,6 +335,26 @@ button:hover {
   }
 }
 
+@media (max-width: 480px) {
+  .container {
+    padding: 5vw 3vw 110px 3vw;
+  }
+  
+  h1 {
+    font-size: 1.4em;
+  }
+  
+  .subtitle {
+    font-size: 0.85em;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    font-size: 0.9em;
+    padding: 10px 14px;
+  }
+}
+
 /* SweetAlert2 Custom Styling */
 .swal2-popup {
   font-family: 'Poppins', sans-serif !important;

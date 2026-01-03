@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pilih Perjalanan</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      overflow-x: hidden;
+      overflow-y: auto;
+      min-height: 100vh;
+    }
+
+    .choice-container {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 40px 20px;
+      box-sizing: border-box;
+    }
+
+    .choice-wrapper {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      max-width: 1000px;
+    }
+
+    .choice-card {
+      width: 320px;
+      height: 400px;
+      background: rgba(10, 10, 10, 0.6);
+      backdrop-filter: blur(20px);
+      border: 3px solid;
+      border-radius: 30px;
+      padding: 40px 30px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .choice-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .choice-card:hover::before {
+      opacity: 1;
+    }
+
+    .choice-card.love {
+      border-color: #ff006a;
+      box-shadow: 0 10px 40px rgba(255, 0, 106, 0.3);
+    }
+
+    .choice-card.love:hover {
+      transform: translateY(-15px) scale(1.05);
+      box-shadow: 0 20px 60px rgba(255, 0, 106, 0.6);
+      border-color: #ffb6d5;
+    }
+
+    .choice-card.birthday {
+      border-color: #00fff7;
+      box-shadow: 0 10px 40px rgba(0, 255, 247, 0.3);
+    }
+
+    .choice-card.birthday:hover {
+      transform: translateY(-15px) scale(1.05);
+      box-shadow: 0 20px 60px rgba(0, 255, 247, 0.6);
+      border-color: #b600ff;
+    }
+
+    .card-icon {
+      margin-bottom: 25px;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .choice-card:hover .card-icon {
+      animation: iconSpin 1s ease-in-out;
+    }
+
+    @keyframes iconSpin {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(180deg); }
+      100% { transform: translateY(0) rotate(360deg); }
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8em;
+      font-weight: 700;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+
+    .choice-card.love .card-title {
+      color: #ff006a;
+      text-shadow: 0 0 20px #ff006a;
+    }
+
+    .choice-card.birthday .card-title {
+      color: #00fff7;
+      text-shadow: 0 0 20px #00fff7;
+    }
+
+    .card-description {
+      color: #fff;
+      font-size: 1.1em;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .choice-card.love .card-badge {
+      background: rgba(255, 0, 106, 0.2);
+      color: #ffb6d5;
+      border: 1px solid #ff006a;
+    }
+
+    .choice-card.birthday .card-badge {
+      background: rgba(0, 255, 247, 0.2);
+      color: #00fff7;
+      border: 1px solid #00fff7;
+    }
+
+    @media (max-width: 768px) {
+      .choice-container {
+        padding: 30px 15px;
+        min-height: auto;
+      }
+
+      .choice-wrapper {
+        flex-direction: column;
+        gap: 25px;
+        width: 100%;
+      }
+
+      .choice-card {
+        width: 100%;
+        max-width: 340px;
+        height: auto;
+        min-height: 360px;
+        padding: 35px 25px;
+      }
+
+      .card-title {
+        font-size: 1.5em;
+      }
+
+      .card-description {
+        font-size: 1em;
+      }
+
+      .card-icon svg {
+        width: 80px;
+        height: 80px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .choice-card {
+        max-width: 100%;
+        padding: 30px 20px;
+      }
+
+      .card-title {
+        font-size: 1.3em;
+      }
+
+      .card-description {
+        font-size: 0.95em;
+      }
+
+      .card-icon svg {
+        width: 70px;
+        height: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="choice-container">
+    <div class="choice-wrapper">
+      <!-- Love Journey Card -->
+      <div class="choice-card love" onclick="goToLoveJourney()">
+        <div class="card-badge">Original</div>
+        <div class="card-icon">
+          <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="loveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#ff006a;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ffb6d5;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.57831 8.50903 2.99871 7.05 2.99871C5.59096 2.99871 4.19169 3.57831 3.16 4.61C2.1283 5.64169 1.54871 7.04097 1.54871 8.5C1.54871 9.95903 2.1283 11.3583 3.16 12.39L4.22 13.45L12 21.23L19.78 13.45L20.84 12.39C21.351 11.8792 21.7563 11.2728 22.0329 10.6053C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.06211 22.0329 6.39464C21.7563 5.72718 21.351 5.12075 20.84 4.61Z" fill="url(#loveGrad)" stroke="#ffb6d5" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="card-title">Love Journey</div>
+        <div class="card-description">
+          Perjalanan romantis penuh kejutan dan pesan cinta spesial untukmu
+        </div>
+      </div>
+
+      <!-- Birthday Special Card -->
+      <div class="choice-card birthday" onclick="goToBirthday()">
+        <div class="card-badge">Special</div>
+        <div class="card-icon">
+          <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bdayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#00fff7;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#b600ff;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ff006a;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <path d="M12 6V3M12 6C10.8954 6 10 6.89543 10 8C10 9.10457 10.8954 10 12 10M12 6C13.1046 6 14 6.89543 14 8C14 9.10457 13.1046 10 12 10M12 10V6" stroke="url(#bdayGrad)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 12C4 11.4696 4.21071 10.9609 4.58579 10.5858C4.96086 10.2107 5.46957 10 6 10H18C18.5304 10 19.0391 10.2107 19.4142 10.5858C19.7893 10.9609 20 11.4696 20 12V18C20 18.5304 19.7893 19.0391 19.4142 19.4142C19.0391 19.7893 18.5304 20 18 20H6C5.46957 20 4.96086 19.7893 4.58579 19.4142C4.21071 19.0391 4 18.5304 4 18V12Z" stroke="url(#bdayGrad)" stroke-width="2"/>
+            <path d="M4 15H20" stroke="url(#bdayGrad)" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="card-title">Birthday Special</div>
+        <div class="card-description">
+          Kejutan ulang tahun istimewa dengan 20 surat cinta dan kue virtual
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="loveCanvas"></canvas>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Proteksi akses
+      if (localStorage.getItem('accessGranted') !== 'true') {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Background animation
+      const canvas = document.getElementById('loveCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      let particles = [];
+      const colors = ['#ff006a', '#00fff7', '#b600ff', '#ffb6d5'];
+      
+      function createParticle() {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2.5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: Math.random() * 0.5 + 0.3
+        };
+      }
+
+      function animate() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        if (particles.length < 120) particles.push(createParticle());
+        
+        particles.forEach(p => {
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          
+          p.x += p.vx;
+          p.y += p.vy;
+          
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        });
+        
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+
+    function goToLoveJourney() {
+      window.location.href = 'home.html';
+    }
+
+    function goToBirthday() {
+      const birthdayDate = new Date('2025-02-20T00:00:00');
+      const now = new Date();
+      
+      if (now < birthdayDate) {
+        // Belum waktunya, tampilkan notifikasi
+        showLockedNotification();
+      } else {
+        // Sudah waktunya, bisa masuk
+        window.location.href = 'birthday.html';
+      }
+    }
+
+    function showLockedNotification() {
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed';
+      modal.style.top = '50%';
+      modal.style.left = '50%';
+      modal.style.transform = 'translate(-50%, -50%) scale(0.8)';
+      modal.style.background = 'linear-gradient(135deg, rgba(10, 10, 30, 0.98), rgba(30, 10, 30, 0.98))';
+      modal.style.backdropFilter = 'blur(20px)';
+      modal.style.border = '3px solid';
+      modal.style.borderImage = 'linear-gradient(135deg, #00fff7, #ff006a, #b600ff) 1';
+      modal.style.borderRadius = '30px';
+      modal.style.padding = window.innerWidth <= 600 ? '35px 25px' : '50px 60px';
+      modal.style.textAlign = 'center';
+      modal.style.zIndex = 10000;
+      modal.style.boxShadow = '0 20px 60px rgba(0, 255, 247, 0.3)';
+      modal.style.animation = 'modalAppear 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+      modal.style.maxWidth = window.innerWidth <= 600 ? '85vw' : '500px';
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes modalAppear {
+          0% {
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+          }
+        }
+        @keyframes lockShake {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-10deg); }
+          75% { transform: rotate(10deg); }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      const birthdayDate = new Date('2025-02-20T00:00:00');
+      const now = new Date();
+      const diff = birthdayDate - now;
+      const daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      
+      modal.innerHTML = `
+        <div style="margin-bottom: 25px;">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: lockShake 0.5s ease-in-out 3;">
+            <defs>
+              <linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#ff006a;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ffb6d5;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <path d="M17 11H7C5.89543 11 5 11.8954 5 13V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V13C19 11.8954 18.1046 11 17 11Z" stroke="url(#lockGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="16" r="1.5" fill="url(#lockGrad)"/>
+            <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="url(#lockGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 style="font-family: Orbitron, sans-serif; background: linear-gradient(135deg, #ff006a, #b600ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px; font-size: ${window.innerWidth <= 600 ? '1.6em' : '2.2em'}; font-weight: 900;">Terkunci!</h2>
+        <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #ff006a, #b600ff); margin: 0 auto 20px; border-radius: 2px;"></div>
+        <p style="color: #fff; font-size: ${window.innerWidth <= 600 ? '1em' : '1.2em'}; margin-bottom: 10px; line-height: 1.6;">Birthday Special akan terbuka pada:</p>
+        <p style="color: #00fff7; font-size: ${window.innerWidth <= 600 ? '1.3em' : '1.5em'}; margin-bottom: 15px; font-weight: 700; text-shadow: 0 0 20px #00fff7;">20 Februari 2025</p>
+        <p style="color: #ffb6d5; font-size: ${window.innerWidth <= 600 ? '1em' : '1.1em'}; margin-bottom: 35px;">Tinggal ${daysLeft} hari lagi! 🎂</p>
+        <button onclick="this.parentElement.remove()" style="
+          background: linear-gradient(135deg, #ff006a, #b600ff);
+          border: none;
+          padding: ${window.innerWidth <= 600 ? '12px 35px' : '15px 45px'};
+          border-radius: 15px;
+          color: #fff;
+          font-family: Orbitron, sans-serif;
+          font-weight: 700;
+          font-size: ${window.innerWidth <= 600 ? '1em' : '1.1em'};
+          cursor: pointer;
+          transition: all 0.3s;
+          box-shadow: 0 5px 20px rgba(255, 0, 106, 0.4);
+        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 30px rgba(255, 0, 106, 0.6)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(255, 0, 106, 0.4)';">
+          Oke, Sabar Dulu
+        </button>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+  </script>
+</body>
+</html>

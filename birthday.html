@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Birthday Special</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+    }
+
+    .birthday-stage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .birthday-stage.active {
+      display: flex;
+    }
+
+    /* Countdown/Welcome Stage */
+    .countdown-container {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .countdown-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5em;
+      background: linear-gradient(135deg, #00fff7, #ff006a, #b600ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 30px;
+      animation: titleGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes titleGlow {
+      0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 255, 247, 0.6)); }
+      50% { filter: drop-shadow(0 0 40px rgba(255, 0, 106, 0.8)); }
+    }
+
+    .countdown-text {
+      font-size: 1.3em;
+      color: #fff;
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+
+    .countdown-timer {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .time-box {
+      background: rgba(10, 10, 10, 0.6);
+      border: 2px solid #00fff7;
+      border-radius: 15px;
+      padding: 20px;
+      min-width: 80px;
+      box-shadow: 0 0 20px rgba(0, 255, 247, 0.3);
+    }
+
+    .time-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5em;
+      color: #00fff7;
+      text-shadow: 0 0 20px #00fff7;
+    }
+
+    .time-label {
+      font-size: 0.9em;
+      color: #ffb6d5;
+      margin-top: 5px;
+    }
+
+    /* Puisi Stage */
+    .poem-container {
+      max-width: 800px;
+      max-height: 85vh;
+      padding: 40px;
+      text-align: center;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* Hide scrollbar di desktop tapi tetep bisa scroll */
+    .poem-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .poem-container {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .poem-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2em;
+      color: #fff;
+      line-height: 2;
+      text-align: left;
+      white-space: pre-wrap;
+      text-shadow: 0 0 10px rgba(0, 255, 247, 0.3);
+      padding-bottom: 20px;
+    }
+
+    /* 20 Love Letters Stage */
+    .letters-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      justify-content: center;
+      padding: 40px 20px;
+      max-width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .letters-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .letters-container {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .envelope-3d {
+      width: 140px;
+      height: 100px;
+      perspective: 1000px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-3d:not(.opened):hover {
+      transform: scale(1.1);
+    }
+
+    .envelope-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+    }
+
+    .envelope-3d.opened .envelope-inner {
+      transform: rotateY(180deg);
+    }
+
+    .envelope-front, .envelope-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(0, 255, 247, 0.3), rgba(182, 0, 255, 0.3));
+      border: 2px solid #00fff7;
+      box-shadow: 0 5px 20px rgba(0, 255, 247, 0.4);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .envelope-3d:not(.opened):hover .envelope-front {
+      box-shadow: 0 8px 35px rgba(0, 255, 247, 0.7);
+    }
+
+    .envelope-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(135deg, rgba(255, 0, 106, 0.4), rgba(182, 0, 76, 0.4));
+      border-color: #ff006a;
+      font-size: 0.75em;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      line-height: 1.3;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .envelope-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5em;
+      color: #00fff7;
+      text-shadow: 0 0 10px #00fff7;
+    }
+
+    /* Letter Modal */
+    .letter-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      border: 3px solid #ff006a;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 85vw;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 5000;
+      box-shadow: 0 0 40px rgba(255, 0, 106, 0.5);
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .letter-modal::-webkit-scrollbar {
+      display: none;
+    }
+
+    .letter-modal {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .letter-modal.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .letter-modal-content {
+      color: #fff;
+      font-size: 1.1em;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .close-letter {
+      margin-top: 25px;
+      background: linear-gradient(135deg, #ff006a, #b6004c);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(255, 0, 106, 0.4);
+    }
+
+    .close-letter:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(255, 0, 106, 0.6);
+    }
+
+    /* Polaroid Gallery */
+    .polaroid-gallery-container {
+      width: 100%;
+      max-width: 1200px;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .polaroid-wall {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .polaroid {
+      background: #fff;
+      padding: 15px 15px 60px 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      animation: polaroidFloat 4s ease-in-out infinite;
+    }
+
+    .polaroid:nth-child(1) { transform: rotate(-5deg); animation-delay: 0s; }
+    .polaroid:nth-child(2) { transform: rotate(3deg); animation-delay: 0.5s; }
+    .polaroid:nth-child(3) { transform: rotate(-3deg); animation-delay: 1s; }
+    .polaroid:nth-child(4) { transform: rotate(4deg); animation-delay: 1.5s; }
+
+    @keyframes polaroidFloat {
+      0%, 100% { transform: translateY(0) rotate(var(--rotation, 0deg)); }
+      50% { transform: translateY(-15px) rotate(var(--rotation, 0deg)); }
+    }
+
+    .polaroid:hover {
+      transform: scale(1.15) rotate(0deg) !important;
+      box-shadow: 0 20px 60px rgba(0, 255, 247, 0.6), 0 0 40px rgba(255, 0, 106, 0.4);
+      z-index: 10;
+      animation: none;
+    }
+
+    .polaroid-image {
+      width: 250px;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+      border: 2px solid #f0f0f0;
+    }
+
+    .polaroid-caption {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      font-family: 'Poppins', cursive;
+      font-size: 0.95em;
+      color: #333;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .polaroid.zoomed {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) scale(2) rotate(0deg) !important;
+      z-index: 10001 !important;
+      animation: none !important;
+      box-shadow: 0 30px 80px rgba(0, 255, 247, 0.6), 0 0 100px rgba(255, 0, 106, 0.4) !important;
+    }
+
+    /* Hide other polaroids when one is zoomed */
+    .polaroid-wall.has-zoomed .polaroid:not(.zoomed) {
+      opacity: 0.2;
+      filter: blur(5px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .polaroid.zoomed {
+        transform: translate(-50%, -50%) scale(1.5) rotate(0deg) !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .polaroid.zoomed {
+        transform: translate(-50%, -50%) scale(1.3) rotate(0deg) !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .polaroid-image {
+        width: 180px;
+        height: 180px;
+      }
+      
+      .polaroid {
+        padding: 12px 12px 50px 12px;
+      }
+      
+      .polaroid-caption {
+        font-size: 0.85em;
+        bottom: 12px;
+      }
+      
+      .polaroid-wall {
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .polaroid-image {
+        width: 150px;
+        height: 150px;
+      }
+      
+      .polaroid {
+        padding: 10px 10px 45px 10px;
+      }
+      
+      .polaroid-caption {
+        font-size: 0.8em;
+      }
+    }
+
+    /* Cake Stage */
+    .cake-container {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .cake-svg {
+      width: 300px;
+      height: 300px;
+      margin: 30px auto;
+      cursor: pointer;
+      transition: transform 0.3s;
+      animation: cakeFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes cakeFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .cake-svg:hover {
+      transform: scale(1.1);
+    }
+
+    .cake-instruction {
+      font-size: 1.3em;
+      color: #00fff7;
+      text-shadow: 0 0 20px #00fff7;
+      margin-top: 20px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: #ff006a;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    /* Shake animation untuk amplop yang belum dibuka */
+    @keyframes envelopeShake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-2deg); }
+      75% { transform: rotate(2deg); }
+    }
+
+    .envelope-3d:not(.opened) {
+      animation: envelopeShake 3s ease-in-out infinite;
+    }
+
+    .envelope-3d:not(.opened):hover {
+      animation: none;
+    }
+
+    /* Achievement notification */
+    .achievement {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(135deg, rgba(0, 255, 247, 0.95), rgba(182, 0, 255, 0.95));
+      border: 3px solid #fff;
+      border-radius: 20px;
+      padding: 30px 50px;
+      z-index: 10000;
+      text-align: center;
+      box-shadow: 0 0 50px rgba(0, 255, 247, 0.8);
+      animation: achievementPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    }
+
+    @keyframes achievementPop {
+      0% { transform: translate(-50%, -50%) scale(0); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .achievement-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8em;
+      color: #000;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .achievement-text {
+      font-size: 1.2em;
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* Progress indicator */
+    .progress-bar-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 10, 10, 0.8);
+      border: 2px solid #00fff7;
+      border-radius: 30px;
+      padding: 10px 25px;
+      z-index: 9997;
+      font-family: 'Orbitron', sans-serif;
+      color: #00fff7;
+      font-size: 1.1em;
+      box-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
+    }
+
+    /* Next Button */
+    .next-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #00fff7, #b600ff);
+      border: none;
+      padding: 15px 40px;
+      border-radius: 15px;
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 1.1em;
+      cursor: pointer;
+      z-index: 9998;
+      box-shadow: 0 0 30px rgba(0, 255, 247, 0.8);
+      transition: all 0.3s;
+      display: none;
+    }
+
+    .next-btn.show {
+      display: block;
+      animation: btnPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes btnPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+    }
+
+    @media (max-width: 600px) {
+      .countdown-title { font-size: 1.8em; }
+      .countdown-text { font-size: 1.1em; padding: 0 15px; }
+      .time-box { min-width: 60px; padding: 15px; }
+      .time-value { font-size: 1.8em; }
+      .poem-container { 
+        padding: 30px 20px; 
+        max-width: 95vw;
+        max-height: 80vh;
+      }
+      .poem-text { 
+        font-size: 1em;
+        line-height: 1.9;
+      }
+      .envelope-3d { width: 110px; height: 80px; }
+      .cake-svg { width: 220px; height: 220px; }
+      .cake-instruction { font-size: 1.1em; }
+      .letters-container { padding: 30px 15px; gap: 20px; }
+      .polaroid-gallery-container { padding: 30px 15px; }
+      
+      #stage5 .cake-container > div {
+        width: 90vw !important;
+        max-width: 90vw !important;
+        height: 300px !important;
+      }
+      
+      #stage5 .cake-container > div > div {
+        bottom: -70px !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
+      
+      #stage5 .cake-container button {
+        width: 100% !important;
+        max-width: 200px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .countdown-title { font-size: 1.5em; }
+      .countdown-text { font-size: 1em; }
+      .countdown-timer { gap: 10px; flex-wrap: wrap; }
+      .time-box { min-width: 70px; }
+      .poem-container {
+        padding: 25px 15px;
+        max-height: 75vh;
+      }
+      .poem-text { 
+        font-size: 0.95em; 
+        line-height: 1.8; 
+      }
+      .envelope-3d { width: 100px; height: 75px; }
+      .envelope-number { font-size: 1.3em; }
+      
+      #stage5 .cake-container > div {
+        height: 250px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="next-btn" id="nextBtn">Lanjut</button>
+  <canvas id="loveCanvas"></canvas>
+  <audio id="bgMusic" src="assets/music/lagu2.mp3" loop></audio>
+
+  <!-- Stage 1: Countdown/Welcome -->
+  <div class="birthday-stage active" id="stage1">
+    <div class="countdown-container">
+      <div class="countdown-title" id="countdownTitle">Birthday Special</div>
+      <div class="countdown-text" id="countdownText"></div>
+      <div class="countdown-timer" id="countdownTimer" style="display:none;">
+        <div class="time-box">
+          <div class="time-value" id="days">00</div>
+          <div class="time-label">Hari</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value" id="hours">00</div>
+          <div class="time-label">Jam</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value" id="minutes">00</div>
+          <div class="time-label">Menit</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value" id="seconds">00</div>
+          <div class="time-label">Detik</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage 2: Puisi -->
+  <div class="birthday-stage" id="stage2">
+    <div class="poem-container">
+      <div class="poem-text" id="poemText"></div>
+    </div>
+  </div>
+
+  <!-- Stage 3: 20 Love Letters -->
+  <div class="birthday-stage" id="stage3">
+    <div class="progress-bar-container" id="progressBar">0/20 Amplop Dibuka</div>
+    <div class="letters-container" id="lettersContainer"></div>
+  </div>
+
+  <!-- Stage 4: Photo Gallery -->
+  <div class="birthday-stage" id="stage4">
+    <div class="polaroid-gallery-container">
+      <div class="countdown-title" style="margin-bottom: 40px;">Kenangan Bersama</div>
+      <div class="polaroid-wall" id="polaroidWall"></div>
+    </div>
+  </div>
+
+  <!-- Stage 5: Virtual Cake -->
+  <div class="birthday-stage" id="stage5">
+    <div class="cake-container">
+      <div class="countdown-title">Saatnya Potong Kue!</div>
+      <div class="cake-svg" id="cakeSvg" onclick="cutCake()">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="cakeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#ff006a;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#b6004c;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="frostingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#ffb6d5;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#ff006a;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect x="40" y="100" width="120" height="60" fill="url(#cakeGrad)" stroke="#fff" stroke-width="2" rx="5"/>
+          <ellipse cx="100" cy="100" rx="60" ry="15" fill="url(#frostingGrad)" stroke="#fff" stroke-width="2"/>
+          <line x1="100" y1="70" x2="100" y2="90" stroke="#00fff7" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="100" cy="70" rx="5" ry="8" fill="#ffff00" stroke="#ff006a" stroke-width="1">
+            <animate attributeName="opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
+          </ellipse>
+          <circle cx="60" cy="110" r="3" fill="#00fff7"/>
+          <circle cx="80" cy="115" r="3" fill="#b600ff"/>
+          <circle cx="100" cy="110" r="3" fill="#00fff7"/>
+          <circle cx="120" cy="115" r="3" fill="#b600ff"/>
+          <circle cx="140" cy="110" r="3" fill="#00fff7"/>
+        </svg>
+      </div>
+      <div class="cake-instruction">Klik kue untuk memotongnya!</div>
+    </div>
+  </div>
+
+  <!-- Stage 6: Birthday Wishes -->
+  <div class="birthday-stage" id="stage6">
+    <div class="countdown-container">
+      <div class="countdown-title">Happy Birthday!</div>
+      <div class="countdown-text" id="wishesText"></div>
+    </div>
+  </div>
+
+  <!-- Letter Modal - REMOVED, not used anymore -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (localStorage.getItem('accessGranted') !== 'true') {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const nickname = localStorage.getItem('nickname') || 'Sayang';
+      let currentStage = 1;
+      const bgMusic = document.getElementById('bgMusic');
+      const nextBtn = document.getElementById('nextBtn');
+
+      // Play musik
+      setTimeout(() => {
+        bgMusic.volume = 0;
+        bgMusic.play().catch(() => {});
+        let fadeIn = setInterval(() => {
+          if (bgMusic.volume < 0.9) {
+            bgMusic.volume += 0.1;
+          } else {
+            bgMusic.volume = 1;
+            clearInterval(fadeIn);
+          }
+        }, 100);
+      }, 500);
+
+      // Background animation
+      const canvas = document.getElementById('loveCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      let particles = [];
+      function createParticle() {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2,
+          color: ['#00fff7', '#ff006a', '#b600ff'][Math.floor(Math.random() * 3)],
+          alpha: Math.random() * 0.5 + 0.3
+        };
+      }
+
+      function animateBackground() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        if (particles.length < 100) particles.push(createParticle());
+        
+        particles.forEach(p => {
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          
+          p.x += p.vx;
+          p.y += p.vy;
+          
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        });
+        
+        requestAnimationFrame(animateBackground);
+      }
+      animateBackground();
+
+      // Stage 1: Countdown
+      function startStage1() {
+        const birthdayDate = new Date('2025-02-20T00:00:00');
+        const now = new Date();
+        
+        if (now >= birthdayDate) {
+          document.getElementById('countdownText').textContent = `Selamat Ulang Tahun, ${nickname}!\nHari spesialmu telah tiba!`;
+          setTimeout(() => {
+            nextBtn.classList.add('show');
+          }, 2000);
+        } else {
+          document.getElementById('countdownText').textContent = `Menghitung mundur ke hari spesialmu, ${nickname}...`;
+          document.getElementById('countdownTimer').style.display = 'flex';
+          
+          function updateCountdown() {
+            const now = new Date();
+            const diff = birthdayDate - now;
+            
+            if (diff <= 0) {
+              document.getElementById('countdownText').textContent = `Selamat Ulang Tahun, ${nickname}!`;
+              document.getElementById('countdownTimer').style.display = 'none';
+              nextBtn.classList.add('show');
+              return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            
+            setTimeout(updateCountdown, 1000);
+          }
+          updateCountdown();
+          
+          setTimeout(() => {
+            nextBtn.classList.add('show');
+          }, 3000);
+        }
+      }
+
+      // Stage 2: Puisi
+      function startStage2() {
+        const poem = `Aku datang bukan dari rindu yang ramai. Aku datang dari sunyi yang lama belajar bernapas.
+
+Perasaanku pernah berhenti memberi nama pada siapa pun. Ia diam. Ia beku. Ia lupa caranya berharap. Waktu mengajarinya bertahan tanpa menunggu.
+
+Lalu Kamu hadir. Tidak mengetuk. Tidak memaksa. Hanya berdiri. Dan entah bagaimana, sunyi itu retak.
+
+Aku tidak jatuh cinta seperti cerita orang-orang. Aku pelan. Aku hati-hati. Seperti seseorang yang pernah kehilangan arah dan kini memilih menghitung langkah.
+
+Jika aku memilihmu, itu bukan karena dunia terasa indah. Justru karena dunia tetap keras, dan Kamu tidak pergi.
+
+Aku tidak menjanjikan gairah yang selalu menyala. Aku menjanjikan tinggal. Di hari-hari yang tidak dirayakan. Di percakapan yang singkat. Di lelah yang tidak meminta dipahami.
+
+Jika suatu saat aku terlihat dingin, ingatlah, aku pernah mati rasa terlalu lama. Dan Kamu adalah keputusan yang kuambil dengan sadar, bukan pelarian, bukan kebetulan, tetapi keyakinan yang tumbuh tanpa suara.
+
+Aku memilihmu bukan untuk diselamatkan. Aku memilihmu karena akhirnya, aku ingin hidup bersama satu nama.`;
+
+        const poemText = document.getElementById('poemText');
+        let charIndex = 0;
+        
+        function typePoem() {
+          if (charIndex < poem.length) {
+            poemText.textContent = poem.substring(0, charIndex + 1);
+            charIndex++;
+            setTimeout(typePoem, 30);
+          } else {
+            setTimeout(() => {
+              nextBtn.classList.add('show');
+            }, 1000);
+          }
+        }
+        typePoem();
+      }
+
+      // Stage 3: 20 Love Letters
+      const loveLetters = [
+        'Kamu adalah alasan aku tersenyum setiap hari',
+        'Terima kasih sudah selalu ada untukku',
+        'Kamu bikin hidupku lebih berwarna',
+        'Aku bersyukur punya kamu',
+        'Kamu adalah hadiah terindah',
+        'Setiap hari bersamamu adalah berkah',
+        'Kamu selalu tahu cara bikin aku bahagia',
+        'Aku sayang kamu lebih dari apapun',
+        'Kamu adalah rumah bagiku',
+        'Terima kasih sudah menerima aku apa adanya',
+        'Kamu bikin aku jadi versi terbaik diriku',
+        'Aku ingin selalu ada untukmu',
+        'Kamu adalah impian yang jadi kenyataan',
+        'Setiap momen bersamamu sangat berharga',
+        'Kamu adalah cinta sejatiku',
+        'Aku ingin masa depan bersamamu',
+        'Kamu membuat segalanya lebih baik',
+        'Aku bangga punya kamu',
+        'Kamu adalah segalanya bagiku',
+        'Selamat ulang tahun, cintaku! Aku sayang kamu!'
+      ];
+
+      let openedLetters = 0;
+
+      function startStage3() {
+        const container = document.getElementById('lettersContainer');
+        container.innerHTML = '';
+        openedLetters = 0;
+        updateProgressBar();
+        
+        loveLetters.forEach((letter, index) => {
+          const envelope = document.createElement('div');
+          envelope.className = 'envelope-3d';
+          
+          const shortText = letter.length > 40 ? letter.substring(0, 40) + '...' : letter;
+          
+          envelope.innerHTML = `
+            <div class="envelope-inner">
+              <div class="envelope-front">
+                <div class="envelope-number">#${index + 1}</div>
+              </div>
+              <div class="envelope-back">${shortText}</div>
+            </div>
+          `;
+          
+          envelope.onclick = function() {
+            if (!this.classList.contains('opened')) {
+              this.classList.add('opened');
+              openedLetters++;
+              updateProgressBar();
+              
+              // Confetti explosion
+              createMiniConfetti(this);
+              
+              // Floating hearts
+              createFloatingHearts(this);
+              
+              // Achievement unlock
+              checkAchievement(openedLetters);
+              
+              // Cek apakah semua amplop udah dibuka
+              if (openedLetters === loveLetters.length) {
+                setTimeout(() => {
+                  showFinalFireworks();
+                  setTimeout(() => {
+                    nextBtn.classList.add('show');
+                  }, 3000);
+                }, 500);
+              }
+            }
+          };
+          
+          setTimeout(() => {
+            container.appendChild(envelope);
+          }, index * 50);
+        });
+      }
+
+      function updateProgressBar() {
+        document.getElementById('progressBar').textContent = `${openedLetters}/20 Amplop Dibuka`;
+      }
+
+      function createMiniConfetti(element) {
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        for (let i = 0; i < 15; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = centerX + 'px';
+            confetti.style.top = centerY + 'px';
+            confetti.style.background = ['#ff006a', '#00fff7', '#b600ff', '#ffb6d5'][Math.floor(Math.random() * 4)];
+            confetti.style.width = (5 + Math.random() * 8) + 'px';
+            confetti.style.height = confetti.style.width;
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            document.body.appendChild(confetti);
+            
+            const angle = (Math.PI * 2 * i) / 15;
+            const velocity = 3 + Math.random() * 3;
+            let vx = Math.cos(angle) * velocity;
+            let vy = Math.sin(angle) * velocity;
+            let x = centerX;
+            let y = centerY;
+            let opacity = 1;
+            
+            const animate = () => {
+              x += vx;
+              y += vy;
+              vy += 0.2;
+              opacity -= 0.02;
+              
+              confetti.style.left = x + 'px';
+              confetti.style.top = y + 'px';
+              confetti.style.opacity = opacity;
+              
+              if (opacity > 0) {
+                requestAnimationFrame(animate);
+              } else {
+                confetti.remove();
+              }
+            };
+            animate();
+          }, i * 20);
+        }
+      }
+
+      function createFloatingHearts(element) {
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.textContent = '❤️';
+            heart.style.position = 'fixed';
+            heart.style.left = centerX + 'px';
+            heart.style.top = centerY + 'px';
+            heart.style.fontSize = (15 + Math.random() * 15) + 'px';
+            heart.style.zIndex = '9999';
+            heart.style.pointerEvents = 'none';
+            document.body.appendChild(heart);
+            
+            const offsetX = (Math.random() - 0.5) * 100;
+            let y = centerY;
+            let opacity = 1;
+            
+            const animate = () => {
+              y -= 3;
+              opacity -= 0.015;
+              
+              heart.style.top = y + 'px';
+              heart.style.left = (centerX + offsetX) + 'px';
+              heart.style.opacity = opacity;
+              
+              if (opacity > 0) {
+                requestAnimationFrame(animate);
+              } else {
+                heart.remove();
+              }
+            };
+            animate();
+          }, i * 100);
+        }
+      }
+
+      function checkAchievement(count) {
+        const achievements = {
+          5: 'Pembuka Pertama! 🎉',
+          10: 'Setengah Jalan! 🌟',
+          15: 'Hampir Selesai! 💫',
+          20: 'Semua Terbuka! 🎊'
+        };
+        
+        if (achievements[count]) {
+          showAchievement(achievements[count]);
+        }
+      }
+
+      function showAchievement(text) {
+        const achievement = document.createElement('div');
+        achievement.className = 'achievement';
+        achievement.innerHTML = `
+          <div class="achievement-title">Achievement Unlocked!</div>
+          <div class="achievement-text">${text}</div>
+        `;
+        document.body.appendChild(achievement);
+        
+        setTimeout(() => {
+          achievement.style.animation = 'achievementPop 0.3s ease-out reverse forwards';
+          setTimeout(() => achievement.remove(), 300);
+        }, 2000);
+      }
+
+      function showFinalFireworks() {
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            createConfetti();
+          }, i * 50);
+        }
+      }
+
+      function showLetterModal(content, number) {
+        // Not used anymore
+      }
+
+      window.closeLetterModal = function() {
+        // Not used anymore
+      };
+
+      // Stage 4: Photo Gallery
+      const birthdayPhotos = [
+        { src: 'assets/birthday/foto1.jpeg', caption: 'Momen Spesial Kita ❤️' },
+        { src: 'assets/birthday/foto2.jpeg', caption: 'Selalu Bahagia Bersamamu 💕' },
+        { src: 'assets/birthday/foto3.jpeg', caption: 'Kenangan Terindah 🌟' },
+        { src: 'assets/birthday/foto4.jpeg', caption: 'Forever & Always 💖' }
+      ];
+      let currentPhotoIndex = 0;
+      let polaroidOverlay = null;
+
+      function startStage4() {
+        const wall = document.getElementById('polaroidWall');
+        wall.innerHTML = '';
+        
+        birthdayPhotos.forEach((photo, index) => {
+          const polaroid = document.createElement('div');
+          polaroid.className = 'polaroid';
+          
+          const rotations = [-5, 3, -3, 4];
+          polaroid.style.setProperty('--rotation', rotations[index] + 'deg');
+          
+          polaroid.innerHTML = `
+            <img src="${photo.src}" alt="Memory ${index + 1}" class="polaroid-image">
+            <div class="polaroid-caption">${photo.caption}</div>
+          `;
+          
+          polaroid.onclick = function(e) {
+            e.stopPropagation();
+            if (!this.classList.contains('zoomed')) {
+              // Close other zoomed polaroids
+              document.querySelectorAll('.polaroid.zoomed').forEach(p => {
+                p.classList.remove('zoomed');
+              });
+              
+              this.classList.add('zoomed');
+              wall.classList.add('has-zoomed');
+            } else {
+              closePolaroid();
+            }
+          };
+          
+          setTimeout(() => {
+            wall.appendChild(polaroid);
+          }, index * 200);
+        });
+        
+        setTimeout(() => {
+          nextBtn.classList.add('show');
+        }, 2500);
+      }
+
+      function closePolaroid() {
+        const wall = document.getElementById('polaroidWall');
+        document.querySelectorAll('.polaroid.zoomed').forEach(p => {
+          p.classList.remove('zoomed');
+        });
+        if (wall) {
+          wall.classList.remove('has-zoomed');
+        }
+      }
+
+      window.prevPhoto = function() {
+        // Not used anymore
+      };
+
+      window.nextPhoto = function() {
+        // Not used anymore
+      };
+
+      // Stage 5: Virtual Cake
+      function startStage5() {
+        // Cake is ready to cut
+      }
+
+      window.cutCake = function() {
+        const cakeSvg = document.getElementById('cakeSvg');
+        cakeSvg.style.pointerEvents = 'none';
+        cakeSvg.style.animation = 'none';
+        
+        // Confetti explosion
+        for (let i = 0; i < 100; i++) {
+          setTimeout(() => {
+            createConfetti();
+          }, i * 30);
+        }
+        
+        setTimeout(() => {
+          cakeSvg.style.opacity = '0.3';
+          cakeSvg.style.transform = 'scale(0.8)';
+          document.querySelector('.cake-instruction').textContent = 'Selamat! Kue sudah dipotong!';
+          
+          setTimeout(() => {
+            nextBtn.classList.add('show');
+          }, 1000);
+        }, 1500);
+      };
+
+      function createConfetti() {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.background = ['#ff006a', '#00fff7', '#b600ff', '#ffb6d5', '#fff'][Math.floor(Math.random() * 5)];
+        confetti.style.width = (5 + Math.random() * 10) + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        document.body.appendChild(confetti);
+        
+        let pos = -10;
+        let rotation = 0;
+        const fall = setInterval(() => {
+          pos += 5;
+          rotation += 10;
+          confetti.style.top = pos + 'px';
+          confetti.style.transform = `rotate(${rotation}deg)`;
+          if (pos > window.innerHeight) {
+            clearInterval(fall);
+            confetti.remove();
+          }
+        }, 20);
+      }
+
+      // Stage 5: Birthday Wishes
+      function startStage6() {
+        const wishes = `${nickname},
+
+Selamat ulang tahun! Hari ini adalah hari spesialmu, dan aku ingin kamu tahu betapa berartinya kamu bagiku.
+
+Terima kasih sudah menjadi bagian dari hidupku. Terima kasih untuk setiap tawa, setiap dukungan, dan setiap momen indah yang kita lalui bersama.
+
+Aku berharap tahun ini membawa kebahagiaan, kesuksesan, dan semua hal baik untukmu. Aku akan selalu ada di sisimu, mendukungmu dalam setiap langkah.
+
+Semoga semua impianmu terwujud. Semoga kamu selalu sehat, bahagia, dan dikelilingi oleh orang-orang yang mencintaimu.
+
+Aku sayang kamu lebih dari kata-kata bisa ungkapkan.
+
+Happy Birthday, my love! ❤️`;
+
+        const wishesText = document.getElementById('wishesText');
+        let charIndex = 0;
+        
+        function typeWishes() {
+          if (charIndex < wishes.length) {
+            wishesText.textContent = wishes.substring(0, charIndex + 1);
+            charIndex++;
+            setTimeout(typeWishes, 30);
+          } else {
+            setTimeout(() => {
+              showFinalModal();
+            }, 2000);
+          }
+        }
+        typeWishes();
+      }
+
+      function showFinalModal() {
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.background = 'rgba(0, 0, 0, 0.8)';
+        overlay.style.zIndex = 9999;
+        overlay.style.animation = 'fadeIn 0.5s ease-out';
+        document.body.appendChild(overlay);
+
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '50%';
+        modal.style.left = '50%';
+        modal.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        modal.style.background = 'linear-gradient(135deg, rgba(10, 10, 30, 0.98), rgba(30, 10, 30, 0.98))';
+        modal.style.backdropFilter = 'blur(20px)';
+        modal.style.border = '3px solid';
+        modal.style.borderImage = 'linear-gradient(135deg, #00fff7, #ff006a, #b600ff) 1';
+        modal.style.borderRadius = '30px';
+        modal.style.padding = window.innerWidth <= 600 ? '35px 25px' : '50px 60px';
+        modal.style.textAlign = 'center';
+        modal.style.zIndex = 10000;
+        modal.style.boxShadow = '0 20px 60px rgba(0, 255, 247, 0.3)';
+        modal.style.animation = 'modalAppear 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+        modal.style.maxWidth = window.innerWidth <= 600 ? '85vw' : '500px';
+        
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes modalAppear {
+            0% {
+              transform: translate(-50%, -50%) scale(0.5);
+              opacity: 0;
+            }
+            100% {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 1;
+            }
+          }
+          @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        modal.innerHTML = `
+          <div style="margin-bottom: 25px;">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: sparkle 2s ease-in-out infinite;">
+              <defs>
+                <linearGradient id="completeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#00fff7;stop-opacity:1" />
+                  <stop offset="50%" style="stop-color:#ff006a;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#b600ff;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <circle cx="12" cy="12" r="10" stroke="url(#completeGrad)" stroke-width="2" fill="none"/>
+              <path d="M8 12L11 15L16 9" stroke="url(#completeGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2 style="font-family: Orbitron, sans-serif; background: linear-gradient(135deg, #00fff7, #ff006a, #b600ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px; font-size: ${window.innerWidth <= 600 ? '1.6em' : '2.2em'}; font-weight: 900;">Birthday Complete!</h2>
+          <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #00fff7, #ff006a, #b600ff); margin: 0 auto 20px; border-radius: 2px;"></div>
+          <p style="color: #fff; font-size: ${window.innerWidth <= 600 ? '1em' : '1.2em'}; margin-bottom: 10px; line-height: 1.6;">Semoga harimu penuh kebahagiaan!</p>
+          <p style="color: #ffb6d5; font-size: ${window.innerWidth <= 600 ? '1.1em' : '1.3em'}; margin-bottom: 35px; font-weight: 600;">I love you! ❤️</p>
+          <button onclick="window.location.href='choice.html'" style="
+            background: linear-gradient(135deg, #00fff7, #b600ff);
+            border: none;
+            padding: ${window.innerWidth <= 600 ? '12px 35px' : '15px 45px'};
+            border-radius: 15px;
+            color: #000;
+            font-family: Orbitron, sans-serif;
+            font-weight: 700;
+            font-size: ${window.innerWidth <= 600 ? '1em' : '1.1em'};
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 255, 247, 0.4);
+          " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 30px rgba(0, 255, 247, 0.6)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0, 255, 247, 0.4)';">
+            Kembali
+          </button>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            createConfetti();
+          }, i * 50);
+        }
+      }
+
+      // Stage Navigation
+      function goToStage(stage) {
+        document.querySelectorAll('.birthday-stage').forEach(s => s.classList.remove('active'));
+        document.getElementById(`stage${stage}`).classList.add('active');
+        currentStage = stage;
+        nextBtn.classList.remove('show');
+        
+        switch(stage) {
+          case 1: startStage1(); break;
+          case 2: startStage2(); break;
+          case 3: startStage3(); break;
+          case 4: startStage4(); break;
+          case 5: startStage5(); break;
+          case 6: startStage6(); break;
+        }
+      }
+
+      nextBtn.onclick = function() {
+        if (currentStage < 6) {
+          goToStage(currentStage + 1);
+        }
+      };
+
+      // Start
+      startStage1();
+    });
+  </script>
+</body>
+</html>
