@@ -285,12 +285,14 @@
     }
 
     .polaroid-wall {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 40px;
-      justify-content: center;
+      justify-items: center;
       align-items: center;
       padding: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
     }
 
     .polaroid {
@@ -307,6 +309,8 @@
     .polaroid:nth-child(2) { transform: rotate(3deg); animation-delay: 0.5s; }
     .polaroid:nth-child(3) { transform: rotate(-3deg); animation-delay: 1s; }
     .polaroid:nth-child(4) { transform: rotate(4deg); animation-delay: 1.5s; }
+    .polaroid:nth-child(5) { transform: rotate(-4deg); animation-delay: 2s; }
+    .polaroid:nth-child(6) { transform: rotate(2deg); animation-delay: 2.5s; }
 
     @keyframes polaroidFloat {
       0%, 100% { transform: translateY(0) rotate(var(--rotation, 0deg)); }
@@ -386,6 +390,7 @@
       }
       
       .polaroid-wall {
+        grid-template-columns: repeat(2, 1fr);
         gap: 30px;
       }
 
@@ -415,8 +420,28 @@
       }
 
       .polaroid-wall {
+        grid-template-columns: repeat(2, 1fr);
         gap: 25px;
         padding: 15px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .polaroid-image {
+        width: 130px;
+        height: 130px;
+      }
+      
+      .polaroid {
+        padding: 8px 8px 40px 8px;
+      }
+      
+      .polaroid-caption {
+        font-size: 0.75em;
+      }
+
+      .polaroid-wall {
+        gap: 20px;
       }
     }
 
@@ -510,9 +535,18 @@
 
     @media (max-width: 600px) {
       .countdown-title { font-size: 1.8em; }
-      .countdown-text { font-size: 1.1em; padding: 0 15px; }
-      .time-box { min-width: 60px; padding: 15px; }
+      .countdown-text { 
+        font-size: 1.1em; 
+        padding: 0 15px;
+        line-height: 1.6;
+      }
+      .time-box { 
+        min-width: 60px; 
+        padding: 15px;
+      }
       .time-value { font-size: 1.8em; }
+      .time-label { font-size: 0.8em; }
+      
       .poem-container { 
         padding: 30px 20px; 
         max-width: 95vw;
@@ -522,11 +556,36 @@
         font-size: 1em;
         line-height: 1.9;
       }
-      .envelope-3d { width: 110px; height: 80px; }
-      .cake-svg { width: 220px; height: 220px; }
-      .cake-instruction { font-size: 1.1em; }
-      .letters-container { padding: 30px 15px; gap: 20px; }
-      .polaroid-gallery-container { padding: 30px 15px; }
+      
+      .envelope-3d { 
+        width: 110px; 
+        height: 80px; 
+      }
+      .envelope-number { font-size: 1.3em; }
+      
+      .cake-svg { 
+        width: 220px; 
+        height: 220px; 
+      }
+      .cake-instruction { 
+        font-size: 1.1em;
+        padding: 0 20px;
+      }
+      
+      .letters-container { 
+        padding: 30px 15px; 
+        gap: 20px;
+        max-height: 80vh;
+      }
+      
+      .polaroid-gallery-container {
+        max-height: 75vh;
+        padding: 30px 15px;
+      }
+      
+      #stage5 .cake-container {
+        padding: 30px 15px;
+      }
       
       #stage5 .cake-container > div {
         width: 90vw !important;
@@ -544,13 +603,35 @@
         width: 100% !important;
         max-width: 200px !important;
       }
+
+      .next-btn {
+        bottom: 15px;
+        padding: 12px 30px;
+        font-size: 1em;
+      }
     }
 
     @media (max-width: 480px) {
-      .countdown-title { font-size: 1.5em; }
-      .countdown-text { font-size: 1em; }
-      .countdown-timer { gap: 10px; flex-wrap: wrap; }
-      .time-box { min-width: 70px; }
+      .countdown-title { 
+        font-size: 1.5em;
+        padding: 0 10px;
+      }
+      .countdown-text { 
+        font-size: 1em;
+        padding: 0 10px;
+      }
+      .countdown-timer { 
+        gap: 10px; 
+        flex-wrap: wrap;
+        padding: 0 10px;
+      }
+      .time-box { 
+        min-width: 70px;
+        padding: 12px;
+      }
+      .time-value { font-size: 1.6em; }
+      .time-label { font-size: 0.75em; }
+      
       .poem-container {
         padding: 25px 15px;
         max-height: 75vh;
@@ -559,11 +640,80 @@
         font-size: 0.95em; 
         line-height: 1.8; 
       }
-      .envelope-3d { width: 100px; height: 75px; }
-      .envelope-number { font-size: 1.3em; }
+      
+      .envelope-3d { 
+        width: 100px; 
+        height: 75px; 
+      }
+      .envelope-number { font-size: 1.2em; }
+      .envelope-back { font-size: 0.7em; }
+      
+      .letters-container {
+        padding: 25px 10px;
+        gap: 18px;
+        max-height: 75vh;
+      }
+      
+      .cake-svg {
+        width: 200px;
+        height: 200px;
+      }
+      
+      .cake-instruction {
+        font-size: 1em;
+        padding: 0 15px;
+      }
       
       #stage5 .cake-container > div {
         height: 250px !important;
+      }
+
+      .next-btn {
+        bottom: 10px;
+        padding: 10px 25px;
+        font-size: 0.95em;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .countdown-title { font-size: 1.3em; }
+      .countdown-text { font-size: 0.9em; }
+      .time-box { 
+        min-width: 65px;
+        padding: 10px;
+      }
+      .time-value { font-size: 1.4em; }
+      
+      .poem-text { font-size: 0.9em; }
+      
+      .envelope-3d { 
+        width: 90px; 
+        height: 70px; 
+      }
+      .envelope-number { font-size: 1.1em; }
+      .envelope-back { font-size: 0.65em; }
+      
+      .letters-container {
+        gap: 15px;
+      }
+      
+      .cake-svg {
+        width: 180px;
+        height: 180px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .countdown-title { font-size: 2.2em; }
+      .countdown-text { font-size: 1.2em; }
+      .poem-text { font-size: 1.15em; }
+      .envelope-3d { 
+        width: 130px; 
+        height: 95px; 
+      }
+      .polaroid-image {
+        width: 220px;
+        height: 220px;
       }
     }
   </style>
@@ -670,7 +820,7 @@
       }
 
       const nickname = localStorage.getItem('nickname') || 'Sayang';
-      let currentStage = 1;
+      let currentStage = parseInt(localStorage.getItem('birthdayStage')) || 1;
       const bgMusic = document.getElementById('bgMusic');
       const nextBtn = document.getElementById('nextBtn');
 
@@ -1014,7 +1164,9 @@ Aku memilihmu bukan untuk diselamatkan. Aku memilihmu karena akhirnya, aku ingin
         { src: 'assets/birthday/foto1.jpeg', caption: 'Momen Spesial Kita ❤️' },
         { src: 'assets/birthday/foto2.jpeg', caption: 'Selalu Bahagia Bersamamu 💕' },
         { src: 'assets/birthday/foto3.jpeg', caption: 'Kenangan Terindah 🌟' },
-        { src: 'assets/birthday/foto4.jpeg', caption: 'Forever & Always 💖' }
+        { src: 'assets/birthday/foto4.jpeg', caption: 'Forever & Always 💖' },
+        { src: 'assets/birthday/foto5.jpeg', caption: 'Kamu & Aku Selamanya 💝' },
+        { src: 'assets/birthday/foto6.jpeg', caption: 'Cinta Sejati Kita 💗' }
       ];
       let currentPhotoIndex = 0;
       let polaroidOverlay = null;
@@ -1027,7 +1179,7 @@ Aku memilihmu bukan untuk diselamatkan. Aku memilihmu karena akhirnya, aku ingin
           const polaroid = document.createElement('div');
           polaroid.className = 'polaroid';
           
-          const rotations = [-5, 3, -3, 4];
+          const rotations = [-5, 3, -3, 4, -4, 2];
           polaroid.style.setProperty('--rotation', rotations[index] + 'deg');
           
           polaroid.innerHTML = `
@@ -1274,6 +1426,7 @@ Happy Birthday, my love! ❤️`;
         document.querySelectorAll('.birthday-stage').forEach(s => s.classList.remove('active'));
         document.getElementById(`stage${stage}`).classList.add('active');
         currentStage = stage;
+        localStorage.setItem('birthdayStage', stage);
         nextBtn.classList.remove('show');
         
         switch(stage) {
@@ -1292,8 +1445,12 @@ Happy Birthday, my love! ❤️`;
         }
       };
 
-      // Start
-      startStage1();
+      // Start - Load saved stage or start from beginning
+      if (currentStage > 1) {
+        goToStage(currentStage);
+      } else {
+        startStage1();
+      }
     });
   </script>
 </body>
